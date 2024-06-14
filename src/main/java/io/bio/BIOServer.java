@@ -1,0 +1,38 @@
+package io.bio;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
+
+//TCP协议Socket使用BIO进行通信：服务端
+public class BIOServer {
+    // 在main线程中执行下面这些代码
+    //使用Socket进行网络通信
+    public static void main(String[] args) {
+        ServerSocket server = null;
+        Socket socket = null;
+        //基于字节流
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            server = new ServerSocket(8000);
+            System.out.println("服务端启动成功，监听端口为8000，等待客户端连接...");
+            while (true){
+                socket = server.accept(); //等待客户端连接
+                System.out.println("客户连接成功，客户信息为：" + socket.getRemoteSocketAddress());
+                in = socket.getInputStream();
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                //读取客户端的数据
+                while ((len = in.read(buffer)) > 0) {
+                    System.out.println(new String(buffer, 0, len));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
