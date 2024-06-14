@@ -10,11 +10,17 @@ import design.mode.factory.bean.car.wheel.impl.BYDWheel;
  */
 public class BYDFactoryImpl implements ICarFactory {
 
+    /**
+     * 造BYD发动机
+     */
     @Override
     public IEngine createEngine() {
         return new BYDEngine();
     }
 
+    /**
+     * 造BYD轮子
+     */
     @Override
     public IWheel createWheel() {
         return new BYDWheel();

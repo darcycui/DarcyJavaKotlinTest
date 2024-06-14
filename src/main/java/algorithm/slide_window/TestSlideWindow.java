@@ -8,23 +8,36 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 滑动时间窗口限流工具
+ * 10秒内只允许2次通过
+ * 滑动时间窗口限流工具: 将时间限制转换为数量限制
  * 本限流工具只适用于单机版，如果想要做全局限流，可以按本程序的思想，用redis的List结构去实现
- *
- * @author dijia478
- * @date 2020-10-13 10:53
+ * <p>
+ * url: <a href="https://mp.weixin.qq.com/s/Wab7Vt106lK-1VGegJhMow">Java 实现滑动时间窗口限流算法，你见过吗？</a>
  */
 public class TestSlideWindow {
 
-    /** 队列id和队列的映射关系，队列里面存储的是每一次通过时候的时间戳，这样可以使得程序里有多个限流队列 */
+    /**
+     * 队列id和队列的映射关系，队列里面存储的是每一次通过时候的时间戳，这样可以使得程序里有多个限流队列
+     */
     private volatile static Map<String, List<Long>> MAP = new ConcurrentHashMap<>();
+    
+    /**
+     * 队列中允许通过的次数
+     */
+    private static final int TIME_WINDOW_COUNT = 2;
 
-    private TestSlideWindow() {}
+    /**
+     * 队列中允许通过的时间窗口
+     */
+    private static final long TIME_WINDOW = 10_000L;
+
+    private TestSlideWindow() {
+    }
 
     public static void main(String[] args) throws InterruptedException {
         while (true) {
             // 任意10秒内，只允许2次通过
-            System.out.println(LocalTime.now().toString() + isGo("ListId", 2, 10000L));
+            System.out.println(LocalTime.now().toString() + isGo("ListId", TIME_WINDOW_COUNT, TIME_WINDOW));
             // 睡眠0-10秒
             Thread.sleep(1000 * new Random().nextInt(10));
         }
@@ -46,11 +59,13 @@ public class TestSlideWindow {
         List<Long> list = MAP.computeIfAbsent(listId, k -> new LinkedList<>());
         // 如果队列还没满，则允许通过，并添加当前时间戳到队列开始位置
         if (list.size() < count) {
+            // todo 保存当前时间戳到索引0
             list.add(0, nowTime);
             return true;
         }
 
         // 队列已满（达到限制次数），则获取队列中最早添加的时间戳
+        // todo 获取最早添加的时间戳
         Long farTime = list.get(count - 1);
         // 用当前时间戳 减去 最早添加的时间戳
         if (nowTime - farTime <= timeWindow) {
@@ -61,6 +76,7 @@ public class TestSlideWindow {
             // 若结果大于timeWindow，则说明在timeWindow内，通过的次数小于等于count
             // 允许通过，并删除最早添加的时间戳，将当前时间添加到队列开始位置
             list.remove(count - 1);
+            // todo 保存当前时间戳到索引0
             list.add(0, nowTime);
             return true;
         }

@@ -10,11 +10,17 @@ import design.mode.factory.bean.car.wheel.impl.HavalWheel;
  */
 public class HavalFactoryImpl implements ICarFactory {
 
+    /**
+     * 造哈佛发动机
+     */
     @Override
     public IEngine createEngine() {
         return new HavalEngine();
     }
 
+    /**
+     * 造哈佛轮子
+     */
     @Override
     public IWheel createWheel() {
         return new HavalWheel();
