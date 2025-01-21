@@ -7,11 +7,8 @@ import design.mode.factory.bean.car.car.impl.HavalCar;
 
 public class Client {
     public static void main(String[] args) {
-        // 创建BYD工厂
         ICarFactory bydFactory = new BYDFactoryImpl();
-        // 让工厂生产BYD车
         ICar iCar = new BYDCar(bydFactory.createEngine(), bydFactory.createWheel());
-        // 车子发动
         iCar.run();
 
         System.out.println("==========");

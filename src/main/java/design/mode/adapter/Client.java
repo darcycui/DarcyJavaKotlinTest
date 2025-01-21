@@ -6,7 +6,7 @@ import design.mode.adapter.bean.target.ITarget;
 import design.mode.adapter.bean.target.TargetImpl;
 
 /**
- * ÊÊÅäÆ÷Ä£Ê½: ½«ÒÑÓĞÀàÊÊÅä³ÉÄ¿±êÀà
+ * é€‚é…å™¨æ¨¡å¼
  */
 public class Client {
     public static void main(String[] args) {

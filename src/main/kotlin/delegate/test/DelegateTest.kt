@@ -9,6 +9,7 @@ fun main() {
     val consolePrinterImpl: ConsolePrinterImpl = ConsolePrinterImpl()
     val messageProcessor: MessageProcessor = MessageProcessor(consolePrinterImpl)
     messageProcessor.printMessage("This is a message")
+    println("-----------------------------------")
 
     // 测试属性委托/属性代理
     val lazyProperty = LazyProperty {
@@ -16,7 +17,7 @@ fun main() {
         1
     }
     repeat(2) {
-        println()
+        println("-----------------------------------")
         println("lazyProperty.lazyValue=${lazyProperty.lazyValue}")
         println("lazyProperty.lazyValue2=${lazyProperty.lazyValue2}")
     }

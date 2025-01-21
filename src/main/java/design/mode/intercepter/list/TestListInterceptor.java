@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ÔğÈÎÁ´: ½«ÇëÇóµÄ·¢ÆğÕßºÍ½ÓÊÕÕß·ÖÀë
+ * æ‹¦æˆªå™¨æ¨¡å¼
  * use list to collect interceptors
  */
 public class TestListInterceptor {

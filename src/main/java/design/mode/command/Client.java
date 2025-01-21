@@ -11,7 +11,7 @@ import design.mode.command.command.impl.LightOffCommand;
 import design.mode.command.command.impl.LightOnCommand;
 
 /**
- * 命令模式: 将一个请求封装成一个命令，从而可以统一执行请求和撤销请求。
+ * client
  */
 public class Client {
     public static void main(String[] args) {

@@ -15,7 +15,12 @@ repositories {
 
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0") // 核心协程库
+    // 核心协程库
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
+    // 三方加密库 包含SM加密算法实现
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
+    implementation ("org.bouncycastle:bcprov-jdk18on:1.79")
+
 
 }
 
