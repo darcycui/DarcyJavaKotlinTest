@@ -1,21 +1,6 @@
-package encrypt.sm;
+package encrypt;
 
-public class HexUtil {
-
-    /**
-     * 将 byte[] 转换为 16 进制字符串
-     */
-    public static String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : bytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
+public class EncryptUtil {
 
     /**
      * 将 16 进制字符串转换为字节数组
@@ -32,5 +17,20 @@ public class HexUtil {
                     + Character.digit(hexString.charAt(i + 1), 16));
         }
         return data;
+    }
+
+    /**
+     * 将 byte[] 转换为 16 进制字符串
+     */
+    public static String bytesToHex(byte[] bytes) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : bytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }

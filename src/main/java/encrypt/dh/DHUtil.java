@@ -1,12 +1,9 @@
 package encrypt.dh;
 
-import encrypt.sm.HexUtil;
+import encrypt.EncryptUtil;
 
 import javax.crypto.KeyAgreement;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.DHParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
 import java.security.*;
 
@@ -57,13 +54,13 @@ public class DHUtil {
         PublicKey bPublic = keyPairB.getPublic();
         // A使用B的公钥生成密钥
         byte[] bytesAB = exchangeInternal(aPrivate, bPublic);
-        System.out.println("SecretKeyAB: " + HexUtil.bytesToHex(bytesAB));
+        System.out.println("SecretKeyAB: " + EncryptUtil.bytesToHex(bytesAB));
 
         PrivateKey bPrivate = keyPairB.getPrivate();
         PublicKey aPublic = keyPairA.getPublic();
         // B使用A的公钥生成密钥
         byte[] bytesBA = exchangeInternal(bPrivate, aPublic);
-        System.out.println("SecretKeyBA: " + HexUtil.bytesToHex(bytesBA));
+        System.out.println("SecretKeyBA: " + EncryptUtil.bytesToHex(bytesBA));
     }
 
     /**

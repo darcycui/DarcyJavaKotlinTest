@@ -1,5 +1,8 @@
 package encrypt.sm;
 
+import encrypt.EncryptUtil;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -9,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 
-public class SM4Util {
+public class TestSM4 {
 //    private final String ALGORITHM = "SM4/ECB/PKCS5Padding"; // 电子密码本模式
 //    private final String ALGORITHM = "SM4/CBC/PKCS5Padding"; // 分组连接模式
 //    private final String ALGORITHM = "SM4/CFB8/NoPadding"; // 密文反馈模式
@@ -17,13 +20,27 @@ public class SM4Util {
 //    private final String ALGORITHM = "SM4/CTR/NoPadding"; // 计数器模式
     private final String ALGORITHM = "SM4/GCM/NoPadding";
     private byte[] iv = new byte[16];
+    static {
+        // 添加三方加密库实现
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
+    public static void main(String[] args) {
+        String plainText = "hello world";
+        System.out.println("plainText:" + plainText);
+        TestSM4 sm4 = new TestSM4();
+        String cipherText = sm4.encrypt(plainText);
+        System.out.println("cipherText=" + cipherText);
+        String plainText2 = sm4.decrypt(cipherText);
+        System.out.println("plainText2=" + plainText2);
+    }
 
     public String encrypt(String plainText) {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM, "BC");
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKey("SM4"), getIVParameter());
             byte[] result = cipher.doFinal(plainText.getBytes());
-            return HexUtil.bytesToHex(result);
+            return EncryptUtil.bytesToHex(result);
         } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
@@ -34,7 +51,7 @@ public class SM4Util {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM, "BC");
             cipher.init(Cipher.DECRYPT_MODE, getSecretKey("SM4"), new IvParameterSpec(iv));
-            byte[] result = cipher.doFinal(HexUtil.hexStringToByteArray(cipherText));
+            byte[] result = cipher.doFinal(EncryptUtil.hexStringToByteArray(cipherText));
             return new String(result, StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {

@@ -1,4 +1,4 @@
-package encrypt.aes;
+package encrypt.aes.padding;
 
 import java.io.File;
 import java.io.IOException;

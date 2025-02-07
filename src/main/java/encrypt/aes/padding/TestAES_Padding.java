@@ -1,4 +1,4 @@
-package encrypt.aes;
+package encrypt.aes.padding;
 
 import javax.crypto.*;
 import javax.crypto.spec.*;
@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Arrays;
 
-public class AESPaddingTest {
+public class TestAES_Padding {
 
     public static void main(String[] args) {
         String folder = "D:\\aaa\\Encrypt";

@@ -1,9 +1,8 @@
 package encrypt.dh;
 
-import encrypt.sm.HexUtil;
+import encrypt.EncryptUtil;
 
 import javax.crypto.KeyAgreement;
-import javax.crypto.SecretKey;
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 
@@ -40,13 +39,13 @@ public class ECDHUtil {
         PublicKey bPublic = keyPairB.getPublic();
         // A使用B的公钥生成密钥
         byte[] secretKeyAB = exchangeInternal(aPrivate, bPublic);
-        System.out.println("SecretKeyAB: " + HexUtil.bytesToHex(secretKeyAB));
+        System.out.println("SecretKeyAB: " + EncryptUtil.bytesToHex(secretKeyAB));
 
         PrivateKey bPrivate = keyPairB.getPrivate();
         PublicKey aPublic = keyPairA.getPublic();
         // B使用A的公钥生成密钥
         byte[] secretKeyBA = exchangeInternal(bPrivate, aPublic);
-        System.out.println("SecretKeyBA: " + HexUtil.bytesToHex(secretKeyBA));
+        System.out.println("SecretKeyBA: " + EncryptUtil.bytesToHex(secretKeyBA));
     }
 
     /**

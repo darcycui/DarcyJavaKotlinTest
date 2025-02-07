@@ -1,19 +1,15 @@
-package encrypt.aes;
-
-import encrypt.aes.FilePaddingHelper;
+package encrypt.aes.padding;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.RandomAccessFile;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-public class AESNoPaddingTest {
+public class TestAES_NoPadding {
 
     public static void main(String[] args) {
         String inputFile = "D:\\aaa\\ScreenShot\\Screenshot_20240131-083143 - 副本.png";

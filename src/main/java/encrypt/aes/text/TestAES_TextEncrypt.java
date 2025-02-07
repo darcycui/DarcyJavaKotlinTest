@@ -5,17 +5,17 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-public class AESTextEncryptTest {
+public class TestAES_TextEncrypt {
     public static void main(String[] args) throws Exception {
         // 需要加密的字串
         String cSrc = "www.gowhere.so www.gowhere.so www.gowhere.so www.gowhere.so www.gowhere.so www.gowhere.so www.gowhere.so www.gowhere.so www.gowhere.so";
         System.out.println(cSrc);
         // 加密
-        String enString = AESTextEncryptTest.encryptAES(cSrc);
+        String enString = TestAES_TextEncrypt.encryptAES(cSrc);
         System.out.println("加密后的字串是：" + enString);
 
         // 解密
-        String DeString = AESTextEncryptTest.decryptAES(enString);
+        String DeString = TestAES_TextEncrypt.decryptAES(enString);
 //        String DeString = AESTextEncryptTest.decryptAES("kuXNoFjsbAo3mN79uD6oqA==");
         System.out.println("解密后的字串是：" + DeString);
     }
