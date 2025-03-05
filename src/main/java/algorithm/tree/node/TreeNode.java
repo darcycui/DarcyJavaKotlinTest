@@ -1,4 +1,4 @@
-package tree.node;
+package algorithm.tree.node;
 
 public class TreeNode {
     public int data;
@@ -12,4 +12,8 @@ public class TreeNode {
         this.right = right;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(this.data + " ");
+    }
 }
