@@ -15,12 +15,12 @@ public class TestHMAC {
         String keyStr = "12345678901234561234567890123456";
         String message = "Hello, HMAC!";
         System.out.println("message=" + message);
-        // 计算 message 的 HAMC
+        // 计算 message 的 HAMC 长度取决于使用的hash算法
         // 117881d3d4fe355d726ee8fc0852ec3267f49f83772632e6de19d6afc0d9dedb
         // 9050466246db7c3d7bd3f27801d633aad72b3fd0b764770918fe4b4ee16149ce
         String hmac = computeHmacSha256(keyStr, message);
         System.out.println("hmac=" + hmac);
-        // 计算 message+key 的 Hash
+        // 计算 message+key 的 Hash 长度取决于使用的hash算法
         // 0363e201ea205f2714875a4f6274f72e8212c8ca3800377f0e0fb094bfd022f9
         // d9e1f4b526d9f16d3cf51c1969eca21976abfde8b2dc8a92d055c15eada104b6
         String hash = computeSha256(message + keyStr);
