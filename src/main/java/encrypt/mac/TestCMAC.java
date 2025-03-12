@@ -24,7 +24,7 @@ public class TestCMAC {
 
     public static String calculateCMAC(byte[] key, byte[] data) {
         try {
-            CMac cMac = new CMac(new AESEngine(), 128); // 使用AES引擎，128位MAC
+            CMac cMac = new CMac(AESEngine.newInstance(), 128); // 使用AES引擎，128位MAC
             cMac.init(new KeyParameter(key));
             cMac.update(data, 0, data.length);
             byte[] mac = new byte[cMac.getMacSize()];
