@@ -22,7 +22,7 @@ public class EncryptUtil {
     /**
      * 将 byte[] 转换为 16 进制字符串
      */
-    public static String bytesToHex(byte[] bytes) {
+    public static String bytesToHexString(byte[] bytes) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : bytes) {
             String hex = Integer.toHexString(0xff & b);

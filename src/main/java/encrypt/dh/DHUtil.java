@@ -54,13 +54,13 @@ public class DHUtil {
         PublicKey bPublic = keyPairB.getPublic();
         // A使用B的公钥生成密钥
         byte[] bytesAB = exchangeInternal(aPrivate, bPublic);
-        System.out.println("SecretKeyAB: " + EncryptUtil.bytesToHex(bytesAB));
+        System.out.println("SecretKeyAB: " + EncryptUtil.bytesToHexString(bytesAB));
 
         PrivateKey bPrivate = keyPairB.getPrivate();
         PublicKey aPublic = keyPairA.getPublic();
         // B使用A的公钥生成密钥
         byte[] bytesBA = exchangeInternal(bPrivate, aPublic);
-        System.out.println("SecretKeyBA: " + EncryptUtil.bytesToHex(bytesBA));
+        System.out.println("SecretKeyBA: " + EncryptUtil.bytesToHexString(bytesBA));
     }
 
     /**

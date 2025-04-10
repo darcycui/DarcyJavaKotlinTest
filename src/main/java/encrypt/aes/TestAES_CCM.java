@@ -29,7 +29,7 @@ public class TestAES_CCM {
 
         // 加密
         byte[] ciphertext = encrypt(keyString.getBytes(), nonce, plaintext, aad.getBytes());
-        System.out.println("Encrypt: " + EncryptUtil.bytesToHex(ciphertext));
+        System.out.println("Encrypt: " + EncryptUtil.bytesToHexString(ciphertext));
 
         // 解密
         byte[] decryptedText = decrypt(keyString.getBytes(), nonce, ciphertext, aad.getBytes());

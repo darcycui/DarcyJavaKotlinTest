@@ -32,7 +32,7 @@ public class TestHMAC {
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
         mac.init(secretKey);
         byte[] result = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
-        return EncryptUtil.bytesToHex(result);
+        return EncryptUtil.bytesToHexString(result);
     }
 
     public static String computeSha256(String message) {
@@ -43,7 +43,7 @@ public class TestHMAC {
             digest = MessageDigest.getInstance("SHA-256");
             // 计算输入字符串的哈希值
             byte[] hashBytes = digest.digest(message.getBytes());
-            result = EncryptUtil.bytesToHex(hashBytes);
+            result = EncryptUtil.bytesToHexString(hashBytes);
         } catch (Exception e) {
             System.err.println("计算HMAC失败:" + e.getMessage());
             e.printStackTrace();

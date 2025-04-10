@@ -39,13 +39,13 @@ public class ECDHUtil {
         PublicKey bPublic = keyPairB.getPublic();
         // A使用B的公钥生成密钥
         byte[] secretKeyAB = exchangeInternal(aPrivate, bPublic);
-        System.out.println("SecretKeyAB: " + EncryptUtil.bytesToHex(secretKeyAB));
+        System.out.println("SecretKeyAB: " + EncryptUtil.bytesToHexString(secretKeyAB));
 
         PrivateKey bPrivate = keyPairB.getPrivate();
         PublicKey aPublic = keyPairA.getPublic();
         // B使用A的公钥生成密钥
         byte[] secretKeyBA = exchangeInternal(bPrivate, aPublic);
-        System.out.println("SecretKeyBA: " + EncryptUtil.bytesToHex(secretKeyBA));
+        System.out.println("SecretKeyBA: " + EncryptUtil.bytesToHexString(secretKeyBA));
     }
 
     /**

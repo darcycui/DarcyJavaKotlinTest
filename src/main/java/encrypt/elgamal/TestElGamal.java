@@ -55,8 +55,8 @@ public class TestElGamal {
             PublicKey elGamalPublicKey = keyPair.getPublic();
             PrivateKey elGamalPrivateKey = keyPair.getPrivate();
 
-            out.println("public key is : " + EncryptUtil.bytesToHex(elGamalPublicKey.getEncoded()));
-            out.println("private key is : " + EncryptUtil.bytesToHex(elGamalPrivateKey.getEncoded()));
+            out.println("public key is : " + EncryptUtil.bytesToHexString(elGamalPublicKey.getEncoded()));
+            out.println("private key is : " + EncryptUtil.bytesToHexString(elGamalPrivateKey.getEncoded()));
 
             // 公钥加密，私钥解密 -- 加密
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(elGamalPublicKey.getEncoded());
@@ -65,7 +65,7 @@ public class TestElGamal {
             Cipher cipher = Cipher.getInstance("ElGamal");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] result = cipher.doFinal(SRC.getBytes(StandardCharsets.UTF_8));
-            out.println("私钥加密，公钥解密 -- 加密 : " + EncryptUtil.bytesToHex(result));
+            out.println("私钥加密，公钥解密 -- 加密 : " + EncryptUtil.bytesToHexString(result));
 
             // 公钥加密，私钥解密 -- 解密
             PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(elGamalPrivateKey.getEncoded());

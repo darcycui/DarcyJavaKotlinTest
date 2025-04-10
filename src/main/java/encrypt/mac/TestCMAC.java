@@ -29,7 +29,7 @@ public class TestCMAC {
             cMac.update(data, 0, data.length);
             byte[] mac = new byte[cMac.getMacSize()];
             cMac.doFinal(mac, 0);
-            return EncryptUtil.bytesToHex(mac);
+            return EncryptUtil.bytesToHexString(mac);
         } catch (Exception e) {
             System.err.println("计算CMAC失败:" + e.getMessage());
             e.printStackTrace();

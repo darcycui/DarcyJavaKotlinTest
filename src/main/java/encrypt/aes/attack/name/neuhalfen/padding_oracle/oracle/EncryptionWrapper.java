@@ -96,6 +96,6 @@ public class EncryptionWrapper {
     @Override
     public String toString() {
 
-        return  String.format("{ algorithm:'%s', format:'%s', encoded:'%s' }", secretKey.getAlgorithm(), secretKey.getFormat(), EncryptUtil.bytesToHex(secretKey.getEncoded()) );
+        return  String.format("{ algorithm:'%s', format:'%s', encoded:'%s' }", secretKey.getAlgorithm(), secretKey.getFormat(), EncryptUtil.bytesToHexString(secretKey.getEncoded()) );
     }
 }

@@ -28,7 +28,7 @@ public class TestAES_GCM {
         for (int i = 0; i < 100_000; i++) {
             // Encrypt the original string
             byte[] encryptedData = encrypt(originalString, key, aad);
-            System.out.println("Encrypted data: " + EncryptUtil.bytesToHex(encryptedData));
+            System.out.println("Encrypted data: " + EncryptUtil.bytesToHexString(encryptedData));
 
             // Decrypt the encrypted data
             String decryptedString = decrypt(encryptedData, key, aad);

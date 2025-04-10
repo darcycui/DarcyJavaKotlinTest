@@ -1,12 +1,10 @@
 package encrypt.mac;
 
 import encrypt.EncryptUtil;
-import encrypt.aes.gcm.TestGCM_Bouncy;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.macs.GMac;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.modes.GCMModeCipher;
-import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
@@ -15,7 +13,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 
 public class TestGMAC {
     public static void main(String[] args) throws Exception {
@@ -38,7 +35,7 @@ public class TestGMAC {
 
         // 加密并获取 GMAC（认证标签）
         byte[] ciphertext = encryptWithGMAC(dataBytes, keyBytes, iv);
-        System.out.println("ciphertextStr:" + EncryptUtil.bytesToHex(ciphertext));
+        System.out.println("ciphertextStr:" + EncryptUtil.bytesToHexString(ciphertext));
         String gmac2 = getGMACTag(ciphertext);
         System.out.println("GMAC2: " + gmac2);
         byte[] decrypted = decryptWithGMAC(ciphertext, keyBytes, iv);
@@ -55,7 +52,7 @@ public class TestGMAC {
         gMac.update(data, 0, data.length);
         byte[] mac = new byte[gMac.getMacSize()];
         gMac.doFinal(mac, 0);
-        return EncryptUtil.bytesToHex(mac);
+        return EncryptUtil.bytesToHexString(mac);
     }
 
     // 使用 AES-GCM 加密
@@ -81,6 +78,6 @@ public class TestGMAC {
         int tagLength = 16; // 128位 = 16字节
         byte[] tag = new byte[tagLength];
         System.arraycopy(encryptedData, encryptedData.length - tagLength, tag, 0, tagLength);
-        return EncryptUtil.bytesToHex(tag);
+        return EncryptUtil.bytesToHexString(tag);
     }
 }

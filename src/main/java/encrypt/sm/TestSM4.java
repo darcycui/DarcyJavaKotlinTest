@@ -40,7 +40,7 @@ public class TestSM4 {
             Cipher cipher = Cipher.getInstance(ALGORITHM, "BC");
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKey("SM4"), getIVParameter());
             byte[] result = cipher.doFinal(plainText.getBytes());
-            return EncryptUtil.bytesToHex(result);
+            return EncryptUtil.bytesToHexString(result);
         } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);

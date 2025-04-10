@@ -26,6 +26,6 @@ public final class CipherText {
 
     @Override
     public String toString() {
-      return  String.format("{ iv:'%s', ciphertext:'%s', hmac:'%s' }", EncryptUtil.bytesToHex(iv), EncryptUtil.bytesToHex(ciphertext), EncryptUtil.bytesToHex(hmac) );
+      return  String.format("{ iv:'%s', ciphertext:'%s', hmac:'%s' }", EncryptUtil.bytesToHexString(iv), EncryptUtil.bytesToHexString(ciphertext), EncryptUtil.bytesToHexString(hmac) );
     }
 }

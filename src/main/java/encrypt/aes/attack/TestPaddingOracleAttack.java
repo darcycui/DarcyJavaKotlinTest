@@ -2,12 +2,9 @@ package encrypt.aes.attack;
 
 import encrypt.EncryptUtil;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * 测试 Padding Oracle Attack 填充错误检测攻击
@@ -50,7 +47,7 @@ public class TestPaddingOracleAttack {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
             byte[] encrypted = cipher.doFinal(dataBytes);
 
-            return EncryptUtil.bytesToHex(encrypted); // 数组转16进制string
+            return EncryptUtil.bytesToHexString(encrypted); // 数组转16进制string
 
         } catch (Exception e) {
             e.printStackTrace();
