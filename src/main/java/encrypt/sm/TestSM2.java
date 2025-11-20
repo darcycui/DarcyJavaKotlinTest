@@ -25,9 +25,11 @@ public class TestSM2 {
         ECPublicKeyParameters publicKey = (ECPublicKeyParameters) keyPair.getPublic();
         System.out.println("Public Key: " + Hex.toHexString(publicKey.getQ().getEncoded(false)));
 
-        publicEncryptTest(publicKey, privateKey);
+        encryptTest(publicKey, privateKey);
         signTest(publicKey, privateKey);
     }
+
+    // SM2实现ECDHE密钥协商
 
     private static void signTest(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
         // 要加密的数据
@@ -46,7 +48,7 @@ public class TestSM2 {
         }
     }
 
-    private static void publicEncryptTest(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
+    private static void encryptTest(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
         // 要加密的数据
         String plaintext = "Hello, World!";
         System.out.println("1-->Plaintext: " + plaintext);
