@@ -10,7 +10,7 @@ import kotlin.Pair;
 import java.security.*;
 import java.util.Arrays;
 
-public class TestECC {
+public class TestECCExchange {
     private static Alice alice;
     private static PrivateKey aliceIdentityPrivateKey;
     private static PublicKey aliceIdentityPublicKey;
