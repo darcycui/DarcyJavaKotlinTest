@@ -1,5 +1,7 @@
 package encrypt;
 
+import kotlin.Pair;
+
 public class EncryptUtil {
 
     /**
@@ -32,5 +34,26 @@ public class EncryptUtil {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    public static byte[] appendArrays(byte[]... arrays) {
+        int length = 0;
+        for (byte[] array : arrays) {
+            length += array.length;
+        }
+        byte[] result = new byte[length];
+        int pos = 0;
+        for (byte[] array : arrays) {
+            System.arraycopy(array, 0, result, pos, array.length);
+            pos += array.length;
+        }
+        return result;
+    }
+
+    public static Pair<byte[], byte[]> splitArray(byte[] array, int subArrayLength) {
+        Pair<byte[], byte[]> result = new Pair<>(new byte[subArrayLength], new byte[subArrayLength]);
+        System.arraycopy(array, 0, result.getFirst(), 0, subArrayLength);
+        System.arraycopy(array, subArrayLength, result.getSecond(), 0, subArrayLength);
+        return result;
     }
 }
