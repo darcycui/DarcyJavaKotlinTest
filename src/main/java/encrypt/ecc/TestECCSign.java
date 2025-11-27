@@ -1,7 +1,7 @@
 package encrypt.ecc;
 
-import encrypt.ecc.encrypt.ECDSASignHelper;
-import encrypt.ecc.encrypt.EdDSASignHelper;
+import encrypt.ecc.sign.ECDSASignHelper;
+import encrypt.ecc.sign.EdDSASignHelper;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;

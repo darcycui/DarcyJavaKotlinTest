@@ -2,6 +2,7 @@ package encrypt.ecc;
 
 import encrypt.EncryptUtil;
 import encrypt.ecc.exchange.ECCExchangeHelper;
+import encrypt.ecc.kdf.ChainKey;
 import encrypt.ecc.kdf.HKDF;
 import encrypt.ecc.user.Alice;
 import encrypt.ecc.user.Bob;
@@ -39,16 +40,16 @@ public class TestECCExchange {
 
         // Alice X3DH 密钥交换
         SK = aliceX3DH();
-        log("Alice计算共享密钥", SK);
+        EncryptUtil.log("Alice计算共享密钥", SK);
         // Bob X3DH 密钥交换
         SK2 = bobX3DH();
-        log("Bob计算共享密钥", SK2);
+        EncryptUtil.log("Bob计算共享密钥", SK2);
         if (SK != null && Arrays.equals(SK, SK2)) {
             System.out.println("Alice 和 Bob 的密钥相同");
         } else {
             System.out.println("Alice 和 Bob 的密钥不相同");
         }
-        // 双棘轮
+        // 双棘轮(DH棘轮 KDF棘轮)
         doubleRatchet();
     }
 
@@ -56,28 +57,28 @@ public class TestECCExchange {
         alice = new Alice();
         aliceIdentityPrivateKey = alice.getIdentityPrivateKey();
         aliceIdentityPublicKey = alice.getIdentityPublicKey();
-        log("Alice 的身份私钥", aliceIdentityPrivateKey);
-        log("Alice 的身份公钥", aliceIdentityPublicKey);
+        EncryptUtil.log("Alice 的身份私钥", aliceIdentityPrivateKey);
+        EncryptUtil.log("Alice 的身份公钥", aliceIdentityPublicKey);
         aliceEphemeralKey = ECCExchangeHelper.generateKeyPair();
         aliceEphemeralPrivateKey = aliceEphemeralKey.getPrivate();
         aliceEphemeralPublicKey = aliceEphemeralKey.getPublic();
-        log("Alice 的临时私钥", aliceEphemeralPrivateKey);
-        log("Alice 的临时公钥", aliceEphemeralPublicKey);
+        EncryptUtil.log("Alice 的临时私钥", aliceEphemeralPrivateKey);
+        EncryptUtil.log("Alice 的临时公钥", aliceEphemeralPublicKey);
 
         bob = new Bob();
         bobIdentityPrivateKey = bob.getIdentityPrivateKey();
         bobIdentityPublicKey = bob.getIdentityPublicKey();
-        log("Bob 的身份私钥", bobIdentityPrivateKey);
-        log("Bob 的身份公钥", bobIdentityPublicKey);
+        EncryptUtil.log("Bob 的身份私钥", bobIdentityPrivateKey);
+        EncryptUtil.log("Bob 的身份公钥", bobIdentityPublicKey);
         bobSignedPrePrivateKey = bob.getSignedPreKeyPrivateKey();
         bobSignedPrePublicKey = bob.getSignedPreKeyPublicKey();
-        log("Bob 的预签名私钥", bobSignedPrePrivateKey);
-        log("Bob 的预签名公钥", bobSignedPrePublicKey);
+        EncryptUtil.log("Bob 的预签名私钥", bobSignedPrePrivateKey);
+        EncryptUtil.log("Bob 的预签名公钥", bobSignedPrePublicKey);
         bobOneTimePreKeyPair = bob.getOneTimePreKeyPair("1");
         bobOneTimePrePublicKey = bobOneTimePreKeyPair.getPublic();
         bobOneTimePrePrivateKey = bobOneTimePreKeyPair.getPrivate();
-        log("Bob 的一次性私钥", bobOneTimePrePrivateKey);
-        log("Bob 的一次性公钥", bobOneTimePrePublicKey);
+        EncryptUtil.log("Bob 的一次性私钥", bobOneTimePrePrivateKey);
+        EncryptUtil.log("Bob 的一次性公钥", bobOneTimePrePublicKey);
     }
 
     private static byte[] aliceX3DH() {
@@ -102,151 +103,164 @@ public class TestECCExchange {
 
     private static void doubleRatchet() {
 
-        Pair<byte[], byte[]> pair = EncryptUtil.splitArray(SK, 32);
+        // 1.Alice 发送消息-1
+        Pair<byte[], byte[]> pairAlice = EncryptUtil.splitArray64(SK, 32);
         // Alice Root密钥
-        byte[] K1 = pair.getFirst();
-        // Alice 接收密钥
-        byte[] K2 = pair.getSecond();
-        log("Alice的接收密钥-1", K2);
-        // Alice 双棘轮前进一次
-        byte[] dhx = ECCExchangeHelper.getSharedSecret(aliceEphemeralPrivateKey, bobSignedPrePublicKey);
-        HKDF hkdf = new HKDF();
-        byte[] SKX = hkdf.deriveSecrets(dhx, K1, "Info".getBytes(), 64); // 盐:K1
-        pair = EncryptUtil.splitArray(SKX, 32);
+        byte[] K1 = pairAlice.getFirst();
+        // Alice 接收链密钥
+        byte[] K2 = pairAlice.getSecond();
+        // Alice DH棘轮步进一次
+        aliceEphemeralKey = ECCExchangeHelper.generateKeyPair();
+        aliceEphemeralPrivateKey = aliceEphemeralKey.getPrivate();
+        aliceEphemeralPublicKey = aliceEphemeralKey.getPublic();
+        byte[] dhAlice = ECCExchangeHelper.getSharedSecret(aliceEphemeralPrivateKey, bobSignedPrePublicKey);
+        HKDF hkdfAlice = new HKDF();
+        byte[] dhRatchetAlice = hkdfAlice.deriveSecrets(dhAlice, K1, "DHInfo".getBytes(), 64); // 盐:K1
+        pairAlice = EncryptUtil.splitArray64(dhRatchetAlice, 32);
         // Alice Root密钥(新)
-        byte[] K3 = pair.getFirst();
-        // Alice 发送密钥
-        byte[] K4 = pair.getSecond();
-        log("Alice的发送密钥-1", K4);
+        byte[] K3 = pairAlice.getFirst();
+        // Alice 发送链密钥
+        byte[] K4 = pairAlice.getSecond();
+        // Alice 对称棘轮(发送链)步进一次
+        ChainKey senderChainAlice = new ChainKey(hkdfAlice, K4, 1);
+        byte[] messageKeyAlice = senderChainAlice.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Alice的消息密钥-1", messageKeyAlice);
+        senderChainAlice = senderChainAlice.getNextChainKey(); // 计算下一个发送链密钥
 
-        Pair<byte[], byte[]> pair2 = EncryptUtil.splitArray(SK2, 32);
+        // 2.Bob 接收消息-1
+        Pair<byte[], byte[]> pairBob = EncryptUtil.splitArray64(SK2, 32);
         // Bob Root密钥
-        byte[] K11 = pair2.getFirst();
-        // Bob 发送密钥
-        byte[] K22 = pair2.getSecond();
-        log("Bob的发送密钥-1", K22);
-        // Bob 双棘轮前进一次
-        byte[] dhx2 = ECCExchangeHelper.getSharedSecret(bobSignedPrePrivateKey, aliceEphemeralPublicKey);
-        HKDF hkdf2 = new HKDF();
-        byte[] SKX2 = hkdf2.deriveSecrets(dhx2, K11, "Info".getBytes(), 64); // 盐:K11
-        pair2 = EncryptUtil.splitArray(SKX2, 32);
+        byte[] K11 = pairBob.getFirst();
+        // Bob 发送链密钥
+        byte[] K22 = pairBob.getSecond();
+        // Bob DH棘轮同步
+        byte[] dhBob = ECCExchangeHelper.getSharedSecret(bobSignedPrePrivateKey, aliceEphemeralPublicKey);
+        HKDF hkdfBob = new HKDF();
+        byte[] dhRatchetBob = hkdfBob.deriveSecrets(dhBob, K11, "DHInfo".getBytes(), 64); // 盐:K11
+        pairBob = EncryptUtil.splitArray64(dhRatchetBob, 32);
         // Bob Root密钥(新)
-        byte[] K33 = pair2.getFirst();
-        // Bob 接收密钥
-        byte[] K44 = pair2.getSecond();
-        log("Bob的接收密钥-1", K44);
-
-        if (Arrays.equals(K4, K44)) {
+        byte[] K33 = pairBob.getFirst();
+        // Bob 接收链密钥
+        byte[] K44 = pairBob.getSecond();
+        // 对称棘轮(接收链)步进一次
+        ChainKey receiverChainBob = new ChainKey(hkdfBob, K44, 1);
+        byte[] messageKeyBob = receiverChainBob.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Bob的消息密钥-1", messageKeyBob);
+        if (Arrays.equals(messageKeyAlice, messageKeyBob)) {
             System.out.println("Alice 和 Bob 的密钥相同-1");
         } else {
             System.out.println("Alice 和 Bob 的密钥不相同-1");
         }
+        receiverChainBob = receiverChainBob.getNextChainKey(); // 计算新的接收链密钥
 
-        // Bob 双棘轮前进一次
+        // 3. Bob 发送消息-2
+        // Bob DH棘轮步进一次
         bobEphemeralKey = ECCExchangeHelper.generateKeyPair();
         bobEphemeralPrivateKey = bobEphemeralKey.getPrivate();
         bobEphemeralPublicKey = bobEphemeralKey.getPublic();
-        dhx2 = ECCExchangeHelper.getSharedSecret(bobEphemeralPrivateKey, aliceEphemeralPublicKey);
-        SKX2 = hkdf2.deriveSecrets(dhx2, K33, "Info".getBytes(), 64);
-        pair2 = EncryptUtil.splitArray(SKX2, 32);
+        dhBob = ECCExchangeHelper.getSharedSecret(bobEphemeralPrivateKey, aliceEphemeralPublicKey);
+        dhRatchetBob = hkdfBob.deriveSecrets(dhBob, K33, "DHInfo".getBytes(), 64);
+        pairBob = EncryptUtil.splitArray64(dhRatchetBob, 32);
         // Bob Root密钥(新)
-        byte[] K55 = pair2.getFirst();
-        // Bob 发送密钥(新
-        byte[] K66 = pair2.getSecond();
-        log("Bob的发送密钥-2", K66);
+        byte[] K55 = pairBob.getFirst();
+        // Bob 发送链密钥(新)
+        byte[] K66 = pairBob.getSecond();
+        // 对称棘轮(发送链)步进一次
+        ChainKey senderChainBob = new ChainKey(hkdfBob, K66, 1);
+        messageKeyBob = senderChainBob.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Bob的消息密钥-2", messageKeyBob);
+        senderChainBob = senderChainBob.getNextChainKey(); // 计算新的发送链密钥
 
-        // Alice 双棘轮前进一次
-        dhx = ECCExchangeHelper.getSharedSecret(aliceEphemeralPrivateKey, bobEphemeralPublicKey);
-        SKX = hkdf.deriveSecrets(dhx, K3, "Info".getBytes(), 64);
-        pair = EncryptUtil.splitArray(SKX, 32);
+        // 4. Alice 接收消息-2
+        // Alice DH棘轮同步
+        dhAlice = ECCExchangeHelper.getSharedSecret(aliceEphemeralPrivateKey, bobEphemeralPublicKey);
+        dhRatchetAlice = hkdfAlice.deriveSecrets(dhAlice, K3, "DHInfo".getBytes(), 64);
+        pairAlice = EncryptUtil.splitArray64(dhRatchetAlice, 32);
         // Alice Root密钥(新)
-        byte[] K5 = pair.getFirst();
-        // Alice 接收密钥(新)
-        byte[] K6 = pair.getSecond();
-        log("Alice的接收密钥-2", K6);
-        if (Arrays.equals(K6, K66)) {
+        byte[] K5 = pairAlice.getFirst();
+        // Alice 接收链密钥(新)
+        byte[] K6 = pairAlice.getSecond();
+        // 对称棘轮(接收链)步进一次
+        ChainKey receiverChainAlice = new ChainKey(hkdfAlice, K6, 1);
+        messageKeyAlice = receiverChainAlice.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Alice的消息密钥-2", messageKeyAlice);
+        if (Arrays.equals(messageKeyAlice, messageKeyBob)) {
             System.out.println("Alice 和 Bob 的密钥相同-2");
         } else {
             System.out.println("Alice 和 Bob 的密钥不相同-2");
         }
+        receiverChainAlice = receiverChainAlice.getNextChainKey(); // 计算新的接收链密钥
 
-        // Alice 双棘轮前进一次
+        // 5. Alice 发送消息-3和4和5
+        // Alice DH棘轮步进一次
         aliceEphemeralKey = ECCExchangeHelper.generateKeyPair();
         aliceEphemeralPrivateKey = aliceEphemeralKey.getPrivate();
         aliceEphemeralPublicKey = aliceEphemeralKey.getPublic();
-        dhx = ECCExchangeHelper.getSharedSecret(aliceEphemeralPrivateKey, bobEphemeralPublicKey);
-        SKX = hkdf.deriveSecrets(dhx, K5, "Info".getBytes(), 64);
-        pair = EncryptUtil.splitArray(SKX, 32);
+        dhAlice = ECCExchangeHelper.getSharedSecret(aliceEphemeralPrivateKey, bobEphemeralPublicKey);
+        dhRatchetAlice = hkdfAlice.deriveSecrets(dhAlice, K5, "DHInfo".getBytes(), 64);
+        pairAlice = EncryptUtil.splitArray64(dhRatchetAlice, 32);
         // Alice Root密钥(新)
-        byte[] K7 = pair.getFirst();
-        // Alice 发送密钥(新)
-        byte[] K8 = pair.getSecond();
-        log("Alice的发送密钥-3", K8);
-        // Alice 连续发送消息 只有KDF棘轮前进一次
-        SKX = hkdf.deriveSecrets(dhx, K7, "Info".getBytes(), 64);
-        pair = EncryptUtil.splitArray(SKX, 32);
-        // Alice Root密钥(新)
-        byte[] K9 = pair.getFirst();
-        // Alice 接收密钥(新)
-        byte[] K10 = pair.getSecond();
-        log("Alice的发送密钥-4", K10);
+        byte[] K7 = pairAlice.getFirst();
+        // Alice 发送链密钥(新)
+        byte[] K8 = pairAlice.getSecond();
+        // 对称棘轮(发送链)步进一次
+        senderChainAlice = new ChainKey(hkdfAlice, K8, 1);
+        messageKeyAlice = senderChainAlice.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Alice的消息密钥-3", messageKeyAlice);
+        senderChainAlice = senderChainAlice.getNextChainKey(); // 计算新的发送链密钥
 
-        // Bob 双棘轮前进一次
-        dhx2 = ECCExchangeHelper.getSharedSecret(bobEphemeralPrivateKey, aliceEphemeralPublicKey);
-        SKX2 = hkdf2.deriveSecrets(dhx2, K55, "Info".getBytes(), 64);
-        pair2 = EncryptUtil.splitArray(SKX2, 32);
+        // Alice 继续发送消息-4
+        // 对称棘轮(发送链)步进一次
+        byte[] messageKeyAliceSecond = senderChainAlice.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Alice的消息密钥-4", messageKeyAliceSecond);
+        senderChainAlice = senderChainAlice.getNextChainKey(); // 计算新的发送链密钥
+
+        // Alice 继续发送消息-5
+        byte[] messageKeyAliceThird = senderChainAlice.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Alice的消息密钥-5", messageKeyAliceThird);
+        senderChainAlice = senderChainAlice.getNextChainKey(); // 计算新的发送链密钥
+
+        // 6.Bob 接收消息-3和4和5
+        // DH棘轮同步
+        dhBob = ECCExchangeHelper.getSharedSecret(bobEphemeralPrivateKey, aliceEphemeralPublicKey);
+        dhRatchetBob = hkdfBob.deriveSecrets(dhBob, K55, "DHInfo".getBytes(), 64);
+        pairBob = EncryptUtil.splitArray64(dhRatchetBob, 32);
         // Bob Root密钥(新)
-        byte[] K77 = pair2.getFirst();
-        // Bob 接收密钥(新)
-        byte[] K88 = pair2.getSecond();
-        log("Bob的接收密钥-3", K88);
-        if (Arrays.equals(K8, K88)) {
+        byte[] K77 = pairBob.getFirst();
+        // Bob 接收链密钥(新)
+        byte[] K88 = pairBob.getSecond();
+        // 对称棘轮(接收链)步进一次
+        receiverChainBob = new ChainKey(hkdfBob, K88, 1);
+        messageKeyBob = receiverChainBob.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Bob的消息密钥-3", messageKeyBob);
+        if (Arrays.equals(messageKeyAlice, messageKeyBob)) {
             System.out.println("Alice 和 Bob 的密钥相同-3");
         } else {
             System.out.println("Alice 和 Bob 的密钥不相同-3");
         }
-        // 接收连续消息 只有KDF棘轮前进一次
-        SKX2 = hkdf2.deriveSecrets(dhx2, K77, "Info".getBytes(), 64);
-        pair2 = EncryptUtil.splitArray(SKX2, 32);
-        // Bob Root密钥(新)
-        byte[] K99 = pair2.getFirst();
-        // Bob 发送密钥(新)
-        byte[] K110 = pair2.getSecond();
-        log("Bob的发送密钥-4", K110);
-        if (Arrays.equals(K10, K110)) {
+        receiverChainBob = receiverChainBob.getNextChainKey(); // 计算新的接收链密钥
+
+        // Bob 继续接收消息4
+        // 对称棘轮(接收链)步进一次
+        byte[] messageKeyBobSecond = receiverChainBob.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Bob的消息密钥-4", messageKeyBobSecond);
+        if (Arrays.equals(messageKeyAliceSecond, messageKeyBobSecond)) {
             System.out.println("Alice 和 Bob 的密钥相同-4");
         } else {
             System.out.println("Alice 和 Bob 的密钥不相同-4");
         }
+        receiverChainBob = receiverChainBob.getNextChainKey(); // 计算新的接收链密钥
 
-//        // Bob 双棘轮前进一次
-//        bobEphemeralKey = ECCExchangeHelper.generateKeyPair();
-//        bobEphemeralPrivateKey = bobEphemeralKey.getPrivate();
-//        bobEphemeralPublicKey = bobEphemeralKey.getPublic();
-//        dhx2 = ECCExchangeHelper.getSharedSecret(bobEphemeralPrivateKey, aliceEphemeralPublicKey);
-//        SKX2 = hkdf2.deriveSecrets(dhx2, K55, "Info".getBytes(), 64);
-//        pair2 = EncryptUtil.splitArray(SKX2, 32);
-//        // Bob Root密钥(新)
-//        byte[] K77 = pair2.getFirst();
-//        // Bob 接收密钥(新)
-//        byte[] K88 = pair2.getSecond();
-//        log("Bob的接收密钥-3", K88);
-//        if (Arrays.equals(K8, K88)) {
-//            System.out.println("Alice 和 Bob 的密钥相同-3");
-//        } else {
-//            System.out.println("Alice 和 Bob 的密钥不相同-3");
-//        }
-
+        // Bob 继续接收消息5
+        byte[] messageKeyBobThird = receiverChainBob.getMessageKeys(); // 计算消息密钥
+        EncryptUtil.log("Bob的消息密钥-5", messageKeyBobThird);
+        if (Arrays.equals(messageKeyAliceThird, messageKeyBobThird)) {
+            System.out.println("Alice 和 Bob 的密钥相同-5");
+        } else {
+            System.out.println("Alice 和 Bob 的密钥不相同-5");
+        }
+        receiverChainBob = receiverChainBob.getNextChainKey(); // 计算新的接收链密钥
 
     }
 
-    private static void log(String info, Key key) {
-        String hexString = EncryptUtil.bytesToHexString(key.getEncoded());
-        System.out.println(info + ": " + hexString);
-    }
-
-    private static void log(String info, byte[] bytes) {
-        String hexString = EncryptUtil.bytesToHexString(bytes);
-        System.out.println(info + ": " + hexString);
-    }
 }

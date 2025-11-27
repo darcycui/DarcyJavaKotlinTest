@@ -1,17 +1,20 @@
-package encrypt.ecc.encrypt;
+package encrypt.ecc.sign;
 
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 
-public class EdDSASignHelper {
-    private static final String ALGORITHM_EdDSA = "Ed25519"; // 椭圆曲线算法 EdDSA
-    private static final String ALGORITHM_SIGN = "Ed25519"; // 签名算法
+public class ECDSASignHelper {
+    private static final String ALGORITHM_ECDSA = "EC"; // 椭圆曲线算法
+    private static final String CURVE_NAME = "secp256r1"; // 指定椭圆曲线
+    private static final String ALGORITHM_SIGN = "SHA256withECDSA"; // 签名算法
 
-    public static KeyPair generateKeyPairEdDSA() {
+    public static KeyPair generateKeyPairECDSA() {
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM_EdDSA);
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(ALGORITHM_ECDSA);
+            ECGenParameterSpec ecSpec = new ECGenParameterSpec(CURVE_NAME);
+            keyPairGenerator.initialize(ecSpec, new SecureRandom());
             return keyPairGenerator.generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
         }
     }

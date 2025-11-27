@@ -1,5 +1,7 @@
 package encrypt.ecc.kdf;
 
+import encrypt.EncryptUtil;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;

@@ -1,6 +1,9 @@
 package encrypt;
 
 import kotlin.Pair;
+import kotlin.Triple;
+
+import java.security.Key;
 
 public class EncryptUtil {
 
@@ -50,10 +53,30 @@ public class EncryptUtil {
         return result;
     }
 
-    public static Pair<byte[], byte[]> splitArray(byte[] array, int subArrayLength) {
+    public static Pair<byte[], byte[]> splitArray64(byte[] array, int subArrayLength) {
         Pair<byte[], byte[]> result = new Pair<>(new byte[subArrayLength], new byte[subArrayLength]);
         System.arraycopy(array, 0, result.getFirst(), 0, subArrayLength);
         System.arraycopy(array, subArrayLength, result.getSecond(), 0, subArrayLength);
         return result;
+    }
+
+    public static Triple<byte[], byte[], byte[]> splitArray80(byte[] array, int keyLength, int macLength, int ivLength) {
+        byte[] key = new byte[keyLength];
+        byte[] mac = new byte[macLength];
+        byte[] iv = new byte[ivLength];
+        System.arraycopy(array, 0, key, 0, keyLength);
+        System.arraycopy(array, keyLength, mac, 0, macLength);
+        System.arraycopy(array, keyLength + macLength, iv, 0, ivLength);
+        return new Triple<>(key, mac, iv);
+    }
+
+    public static void log(String info, Key key) {
+        String hexString = bytesToHexString(key.getEncoded());
+        System.out.println(info + ": " + hexString);
+    }
+
+    public static void log(String info, byte[] bytes) {
+        String hexString = bytesToHexString(bytes);
+        System.out.println(info + ": " + hexString);
     }
 }
