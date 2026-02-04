@@ -4,20 +4,19 @@ import kotlinx.coroutines.*
 
 fun main() {
     val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    println("main start: I'm working in thread ${Thread.currentThread().name}")
+    println("main start: 线程:${getThreadName()}")
     scope.launch(Dispatchers.Default) {
-        println("default start: I'm working in thread ${Thread.currentThread().name}")
+        println("default start: 线程:${getThreadName()}")
         delay(3_000)
-        println("default end: I'm working in thread ${Thread.currentThread().name}")
+        println("default end: 线程:${getThreadName()}")
         scope.launch(Dispatchers.IO) {
-            println("io start: I'm working in thread ${Thread.currentThread().name}")
+            println("io start: 线程:${getThreadName()}")
             delay((1_000))
-            println("io end: I'm working in thread ${Thread.currentThread().name}")
+            println("io end: 线程:${getThreadName()}")
         }
     }
     Thread.sleep(10_000)
-    println("main end: I'm working in thread ${Thread.currentThread().name}")
+    println("main end: 线程:${getThreadName()}")
 }
 
-class TestCoroutine {
-}
+private fun getThreadName(): String? = Thread.currentThread().name
