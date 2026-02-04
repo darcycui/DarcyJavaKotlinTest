@@ -1,18 +1,17 @@
 package org.example.copy
 
 fun main() {
-    val testCopy = TestCopy()
     val user = User("John", 30, School("BeijingSecondSchool"))
-    println("user=${user.hashCode()} $user")
-    val copiedUser = user.copy()
-//    val copiedUser = testCopy.copyUser(user) {
-//        // data class 自带copy方法 复制对象
-//        user.copy(name = "John2")
-//    }
-    println("copiedUser=${copiedUser.hashCode()} $copiedUser")
+    println("user=${System.identityHashCode(user)} school=${System.identityHashCode(user.school)} $user")
+    // data class 自带copy方法 复制对象
+    val copiedUser = user.copy(
+        // 嵌套对象 手动复制
+        school = user.school.copy()
+    )
+    println("copiedUser=${System.identityHashCode(copiedUser)} school=${System.identityHashCode(copiedUser.school)} $copiedUser")
     copiedUser.age = 25
-    println("copiedUser=${copiedUser.hashCode()} $copiedUser")
-    println("user=${user.hashCode()} $user")
+    println("copiedUser=${System.identityHashCode(copiedUser)} school=${System.identityHashCode(copiedUser.school)} $copiedUser")
+    println("user=${System.identityHashCode(user)} school=${System.identityHashCode(user.school)} $user")
 
 }
 
