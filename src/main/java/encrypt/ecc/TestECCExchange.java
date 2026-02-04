@@ -10,6 +10,7 @@ import kotlin.Pair;
 
 import java.security.*;
 import java.util.Arrays;
+import java.util.Map;
 
 public class TestECCExchange {
     private static Alice alice;
@@ -102,6 +103,7 @@ public class TestECCExchange {
     }
 
     private static void doubleRatchet() {
+        Map<Integer, byte[]> messageKeysMap = new java.util.HashMap<>();
 
         // 1.Alice 发送消息-1
         Pair<byte[], byte[]> pairAlice = EncryptUtil.splitArray64(SK, 32);
@@ -122,7 +124,7 @@ public class TestECCExchange {
         // Alice 发送链密钥
         byte[] K4 = pairAlice.getSecond();
         // Alice 对称棘轮(发送链)步进一次
-        ChainKey senderChainAlice = new ChainKey(hkdfAlice, K4, 1);
+        ChainKey senderChainAlice = new ChainKey(hkdfAlice, K4, 0);
         byte[] messageKeyAlice = senderChainAlice.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Alice的消息密钥-1", messageKeyAlice);
         senderChainAlice = senderChainAlice.getNextChainKey(); // 计算下一个发送链密钥
@@ -143,7 +145,7 @@ public class TestECCExchange {
         // Bob 接收链密钥
         byte[] K44 = pairBob.getSecond();
         // 对称棘轮(接收链)步进一次
-        ChainKey receiverChainBob = new ChainKey(hkdfBob, K44, 1);
+        ChainKey receiverChainBob = new ChainKey(hkdfBob, K44, 0);
         byte[] messageKeyBob = receiverChainBob.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Bob的消息密钥-1", messageKeyBob);
         if (Arrays.equals(messageKeyAlice, messageKeyBob)) {
@@ -166,7 +168,7 @@ public class TestECCExchange {
         // Bob 发送链密钥(新)
         byte[] K66 = pairBob.getSecond();
         // 对称棘轮(发送链)步进一次
-        ChainKey senderChainBob = new ChainKey(hkdfBob, K66, 1);
+        ChainKey senderChainBob = new ChainKey(hkdfBob, K66, 0);
         messageKeyBob = senderChainBob.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Bob的消息密钥-2", messageKeyBob);
         senderChainBob = senderChainBob.getNextChainKey(); // 计算新的发送链密钥
@@ -181,7 +183,7 @@ public class TestECCExchange {
         // Alice 接收链密钥(新)
         byte[] K6 = pairAlice.getSecond();
         // 对称棘轮(接收链)步进一次
-        ChainKey receiverChainAlice = new ChainKey(hkdfAlice, K6, 1);
+        ChainKey receiverChainAlice = new ChainKey(hkdfAlice, K6, 0);
         messageKeyAlice = receiverChainAlice.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Alice的消息密钥-2", messageKeyAlice);
         if (Arrays.equals(messageKeyAlice, messageKeyBob)) {
@@ -204,18 +206,21 @@ public class TestECCExchange {
         // Alice 发送链密钥(新)
         byte[] K8 = pairAlice.getSecond();
         // 对称棘轮(发送链)步进一次
-        senderChainAlice = new ChainKey(hkdfAlice, K8, 1);
+        int messageIndexSend = 0;
+        senderChainAlice = new ChainKey(hkdfAlice, K8, 0);
         messageKeyAlice = senderChainAlice.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Alice的消息密钥-3", messageKeyAlice);
         senderChainAlice = senderChainAlice.getNextChainKey(); // 计算新的发送链密钥
 
         // Alice 继续发送消息-4
         // 对称棘轮(发送链)步进一次
+        messageIndexSend = 1;
         byte[] messageKeyAliceSecond = senderChainAlice.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Alice的消息密钥-4", messageKeyAliceSecond);
         senderChainAlice = senderChainAlice.getNextChainKey(); // 计算新的发送链密钥
 
         // Alice 继续发送消息-5
+        messageIndexSend = 2;
         byte[] messageKeyAliceThird = senderChainAlice.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Alice的消息密钥-5", messageKeyAliceThird);
         senderChainAlice = senderChainAlice.getNextChainKey(); // 计算新的发送链密钥
@@ -230,7 +235,8 @@ public class TestECCExchange {
         // Bob 接收链密钥(新)
         byte[] K88 = pairBob.getSecond();
         // 对称棘轮(接收链)步进一次
-        receiverChainBob = new ChainKey(hkdfBob, K88, 1);
+        int messageIndexReceive = 0;
+        receiverChainBob = new ChainKey(hkdfBob, K88, 0);
         messageKeyBob = receiverChainBob.getMessageKeys(); // 计算消息密钥
         EncryptUtil.log("Bob的消息密钥-3", messageKeyBob);
         if (Arrays.equals(messageKeyAlice, messageKeyBob)) {
@@ -239,6 +245,11 @@ public class TestECCExchange {
             System.out.println("Alice 和 Bob 的密钥不相同-3");
         }
         receiverChainBob = receiverChainBob.getNextChainKey(); // 计算新的接收链密钥
+        // 如果消息乱序 先收到消息-5 就需要存储消息-3的密钥
+        if (messageIndexSend > messageIndexReceive) {
+            messageKeysMap.put(messageIndexReceive, messageKeyBob);
+            messageIndexReceive++;
+        }
 
         // Bob 继续接收消息4
         // 对称棘轮(接收链)步进一次
@@ -250,6 +261,11 @@ public class TestECCExchange {
             System.out.println("Alice 和 Bob 的密钥不相同-4");
         }
         receiverChainBob = receiverChainBob.getNextChainKey(); // 计算新的接收链密钥
+        // 如果消息乱序 先收到消息-5 就需要存储消息-4的密钥
+        if (messageIndexSend > messageIndexReceive) {
+            messageKeysMap.put(messageIndexReceive, messageKeyBobSecond);
+            messageIndexReceive++;
+        }
 
         // Bob 继续接收消息5
         byte[] messageKeyBobThird = receiverChainBob.getMessageKeys(); // 计算消息密钥
@@ -260,6 +276,12 @@ public class TestECCExchange {
             System.out.println("Alice 和 Bob 的密钥不相同-5");
         }
         receiverChainBob = receiverChainBob.getNextChainKey(); // 计算新的接收链密钥
+        // 收到消息-5 messageIndexSend==messageIndexReceive
+        if (messageIndexSend > messageIndexReceive) { // 这段代码不会执行
+            messageKeysMap.put(messageIndexReceive, messageKeyBobThird);
+            messageIndexReceive++;
+        }
+        System.out.println("存储的消息密钥:" + messageKeysMap);
 
     }
 
