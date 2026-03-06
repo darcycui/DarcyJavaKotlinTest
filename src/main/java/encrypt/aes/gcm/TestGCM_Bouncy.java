@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 public class TestGCM_Bouncy {
     private static final int AES_KEY_SIZE = 128; // 128位密钥
     private static final int GCM_IV_LENGTH = 12; // GCM推荐IV长度12字节
-    private static final int GCM_TAG_LENGTH = 16; // GCM认证标签长度16字节（128位）
+    private static final int GCM_TAG_LENGTH = 128; // GCM认证标签长度（128位）
 
     public static void main(String[] args) {
         System.out.println("Default Charset: 检查" + Charset.defaultCharset());
@@ -43,7 +43,7 @@ public class TestGCM_Bouncy {
             GCMBlockCipher cipher = new GCMBlockCipher(new AESEngine());
             AEADParameters params = new AEADParameters(
                     new KeyParameter(key),
-                    GCM_TAG_LENGTH * 8, // 标签长度（位）
+                    GCM_TAG_LENGTH, // 标签长度（位）
                     iv,
                     null // 无关联数据
             );
@@ -87,7 +87,7 @@ public class TestGCM_Bouncy {
             GCMBlockCipher cipher = new GCMBlockCipher(new AESEngine());
             AEADParameters params = new AEADParameters(
                     new KeyParameter(key),
-                    GCM_TAG_LENGTH * 8,
+                    GCM_TAG_LENGTH,
                     iv,
                     null
             );
