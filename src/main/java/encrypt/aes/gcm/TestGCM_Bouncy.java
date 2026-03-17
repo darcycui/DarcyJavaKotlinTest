@@ -24,7 +24,7 @@ public class TestGCM_Bouncy {
 
         // 加密
         byte[] encrypted = encrypt(originalText.getBytes(), key, iv);
-        System.out.println("加密结果 (Hex): " + EncryptUtil.bytesToHexString(encrypted));
+        System.out.println("加密结果 (Hex): " + EncryptUtil.toHexString(encrypted));
 
         // 解密
         String decryptedText = decrypt(encrypted, key, iv);

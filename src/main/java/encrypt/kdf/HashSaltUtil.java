@@ -16,7 +16,7 @@ public class HashSaltUtil {
             digest = MessageDigest.getInstance("SHA-256");
             // 计算输入字符串的哈希值
             byte[] hashBytes = digest.digest(message.getBytes());
-            result = EncryptUtil.bytesToHexString(hashBytes);
+            result = EncryptUtil.toHexString(hashBytes);
         } catch (Exception e) {
             System.err.println("计算HMAC失败:" + e.getMessage());
             e.printStackTrace();

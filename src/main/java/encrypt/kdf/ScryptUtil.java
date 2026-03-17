@@ -22,7 +22,7 @@ public class ScryptUtil {
                 P,
                 KEY_LENGTH
         );
-        return EncryptUtil.bytesToHexString(result);
+        return EncryptUtil.toHexString(result);
     }
     public static boolean checkPassword(String password, String hashedPassword, String salt) {
         String encryptedPassword = getHashedPassword(password, salt);

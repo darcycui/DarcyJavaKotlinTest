@@ -8,7 +8,7 @@ public class SaltUtil {
     // 生成随机盐字符串(16进制)
     public static String generateSaltString(int length) {
         byte[] array = generateSaltArray(length);
-        return EncryptUtil.bytesToHexString(array);
+        return EncryptUtil.toHexString(array);
     }
 
     // 生成随机盐数组

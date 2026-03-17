@@ -40,7 +40,7 @@ public class TestSM4 {
             Cipher cipher = Cipher.getInstance(ALGORITHM, "BC");
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKey("SM4"), getIVParameter());
             byte[] result = cipher.doFinal(plainText.getBytes());
-            return EncryptUtil.bytesToHexString(result);
+            return EncryptUtil.toHexString(result);
         } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
@@ -51,7 +51,7 @@ public class TestSM4 {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM, "BC");
             cipher.init(Cipher.DECRYPT_MODE, getSecretKey("SM4"), new IvParameterSpec(iv));
-            byte[] result = cipher.doFinal(EncryptUtil.hexStringToByteArray(cipherText));
+            byte[] result = cipher.doFinal(EncryptUtil.toHexByteArray(cipherText));
             return new String(result, StandardCharsets.UTF_8);
         } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {

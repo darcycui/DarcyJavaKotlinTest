@@ -1,4 +1,4 @@
-package encrypt.aes;
+package encrypt.aes.ccm;
 
 import encrypt.EncryptUtil;
 import org.bouncycastle.crypto.engines.AESEngine;
@@ -29,7 +29,7 @@ public class TestAES_CCM {
 
         // 加密
         byte[] ciphertext = encrypt(keyString.getBytes(), nonce, plaintext, aad.getBytes());
-        System.out.println("Encrypt: " + EncryptUtil.bytesToHexString(ciphertext));
+        System.out.println("Encrypt: " + EncryptUtil.toHexString(ciphertext));
 
         // 解密
         byte[] decryptedText = decrypt(keyString.getBytes(), nonce, ciphertext, aad.getBytes());

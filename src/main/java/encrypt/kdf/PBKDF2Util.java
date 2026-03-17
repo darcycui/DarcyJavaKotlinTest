@@ -23,11 +23,11 @@ public class PBKDF2Util {
      */
     public static String getHashedPassword(String password, String salt) {
 
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), EncryptUtil.hexStringToByteArray(salt), PBKDF2_ITERATIONS, HASH_BIT_SIZE);
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), EncryptUtil.toHexByteArray(salt), PBKDF2_ITERATIONS, HASH_BIT_SIZE);
         SecretKeyFactory keyFactory = null;
         try {
             keyFactory = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
-            return EncryptUtil.bytesToHexString(keyFactory.generateSecret(spec).getEncoded());
+            return EncryptUtil.toHexString(keyFactory.generateSecret(spec).getEncoded());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {

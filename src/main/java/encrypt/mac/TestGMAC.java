@@ -35,7 +35,7 @@ public class TestGMAC {
 
         // 加密并获取 GMAC（认证标签）
         byte[] ciphertext = encryptWithGMAC(dataBytes, keyBytes, iv);
-        System.out.println("ciphertextStr:" + EncryptUtil.bytesToHexString(ciphertext));
+        System.out.println("ciphertextStr:" + EncryptUtil.toHexString(ciphertext));
         String gmac2 = getGMACTag(ciphertext);
         System.out.println("GMAC2: " + gmac2);
         byte[] decrypted = decryptWithGMAC(ciphertext, keyBytes, iv);
@@ -52,7 +52,7 @@ public class TestGMAC {
         gMac.update(data, 0, data.length);
         byte[] mac = new byte[gMac.getMacSize()];
         gMac.doFinal(mac, 0);
-        return EncryptUtil.bytesToHexString(mac);
+        return EncryptUtil.toHexString(mac);
     }
 
     // 使用 AES-GCM 加密
@@ -78,6 +78,6 @@ public class TestGMAC {
         int tagLength = 16; // 128位 = 16字节
         byte[] tag = new byte[tagLength];
         System.arraycopy(encryptedData, encryptedData.length - tagLength, tag, 0, tagLength);
-        return EncryptUtil.bytesToHexString(tag);
+        return EncryptUtil.toHexString(tag);
     }
 }

@@ -1,11 +1,11 @@
-package encrypt.aes.text;
+package encrypt.aes.cbc;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-public class TestAES_TextEncrypt {
+public class TestAES_CBC {
     public static void main(String[] args) throws Exception {
         // 需要加密的字串
         String cSrc = "www.baidu.com";

@@ -3,6 +3,7 @@ package encrypt;
 import kotlin.Pair;
 import kotlin.Triple;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
 public class EncryptUtil {
@@ -10,7 +11,7 @@ public class EncryptUtil {
     /**
      * 将 16 进制字符串转换为字节数组
      */
-    public static byte[] hexStringToByteArray(String hexString) {
+    public static byte[] toHexByteArray(String hexString) {
         int len = hexString.length();
         if (len % 2 != 0) {
             throw new IllegalArgumentException("16 进制字符串的长度必须是偶数");
@@ -27,7 +28,7 @@ public class EncryptUtil {
     /**
      * 将 byte[] 转换为 16 进制字符串
      */
-    public static String bytesToHexString(byte[] bytes) {
+    public static String toHexString(byte[] bytes) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : bytes) {
             String hex = Integer.toHexString(0xff & b);
@@ -71,12 +72,16 @@ public class EncryptUtil {
     }
 
     public static void log(String info, Key key) {
-        String hexString = bytesToHexString(key.getEncoded());
+        String hexString = toHexString(key.getEncoded());
         System.out.println(info + ": " + hexString);
     }
 
     public static void log(String info, byte[] bytes) {
-        String hexString = bytesToHexString(bytes);
+        String hexString = toHexString(bytes);
         System.out.println(info + ": " + hexString);
+    }
+
+    public static String toNormalString(byte[] bytes) {
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }

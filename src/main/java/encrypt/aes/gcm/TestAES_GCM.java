@@ -13,7 +13,8 @@ import static java.lang.System.out;
 
 public class TestAES_GCM {
     private static final int GCM_TAG_LENGTH = 16; // tag in bytes
-    private static final int GCM_IV_LENGTH = 12; // iv in bytes
+//    private static final int GCM_IV_LENGTH = 12; // iv in bytes
+    private static final int GCM_IV_LENGTH = 16; // iv in bytes
 
     public static void main(String[] args) throws Exception {
         String originalString = "Hello, World!";
@@ -28,11 +29,11 @@ public class TestAES_GCM {
         for (int i = 0; i < 100_000; i++) {
             // Encrypt the original string
             byte[] encryptedData = encrypt(originalString, key, aad);
-            System.out.println("Encrypted data: " + EncryptUtil.bytesToHexString(encryptedData));
+//            System.out.println("Encrypted data: " + EncryptUtil.bytesToHexString(encryptedData));
 
             // Decrypt the encrypted data
             String decryptedString = decrypt(encryptedData, key, aad);
-            System.out.println("Decrypted string: " + decryptedString);
+//            System.out.println("Decrypted string: " + decryptedString);
         }
         long end = System.currentTimeMillis();
         // 耗时 转为秒

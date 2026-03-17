@@ -52,7 +52,7 @@ public class PaddingOracleFactory {
         byte[] randomBytes = new byte[len];
         rnd.nextBytes(randomBytes);
 
-        return EncryptUtil.bytesToHexString(randomBytes).substring(0, len);
+        return EncryptUtil.toHexString(randomBytes).substring(0, len);
     }
 
 }

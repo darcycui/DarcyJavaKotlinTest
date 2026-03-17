@@ -47,7 +47,7 @@ public class TestPaddingOracleAttack {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
             byte[] encrypted = cipher.doFinal(dataBytes);
 
-            return EncryptUtil.bytesToHexString(encrypted); // 数组转16进制string
+            return EncryptUtil.toHexString(encrypted); // 数组转16进制string
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class TestPaddingOracleAttack {
     }
 
     public static String decrypt(String data, byte[] newIV) throws Exception {
-        byte[] encrypted1 = EncryptUtil.hexStringToByteArray(data); //16进制string转数组
+        byte[] encrypted1 = EncryptUtil.toHexByteArray(data); //16进制string转数组
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
         IvParameterSpec ivSpec = new IvParameterSpec(newIV);

@@ -36,8 +36,8 @@ public class TestRSA {
             RSAPublicKey rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
             RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-            out.println("public key is : " + EncryptUtil.bytesToHexString(rsaPublicKey.getEncoded()));
-            out.println("private key is : " + EncryptUtil.bytesToHexString(rsaPrivateKey.getEncoded()));
+            out.println("public key is : " + EncryptUtil.toHexString(rsaPublicKey.getEncoded()));
+            out.println("private key is : " + EncryptUtil.toHexString(rsaPrivateKey.getEncoded()));
 
             PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(rsaPrivateKey.getEncoded());
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -93,7 +93,7 @@ public class TestRSA {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] res = cipher.doFinal(SRC.getBytes(StandardCharsets.UTF_8));
-            out.println("公钥加密: " + EncryptUtil.bytesToHexString(res));
+            out.println("公钥加密: " + EncryptUtil.toHexString(res));
             return res;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException e) {
