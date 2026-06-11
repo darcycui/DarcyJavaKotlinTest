@@ -5,6 +5,7 @@ import kotlin.Triple;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.MessageDigest;
 
 public class EncryptUtil {
 
@@ -83,5 +84,18 @@ public class EncryptUtil {
 
     public static String toNormalString(byte[] bytes) {
         return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public static String hash256(byte[] input) {
+        // 计算 input 的 sha256 hash
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashBytes = digest.digest(input);
+            return toHexString(hashBytes);
+        } catch (Exception e) {
+            System.err.println("计算SHA-256哈希失败: " + e.getMessage());
+            e.printStackTrace();
+            return "";
+        }
     }
 }
