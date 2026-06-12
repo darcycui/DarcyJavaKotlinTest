@@ -87,8 +87,10 @@ class TestFileExport {
     fun `test-decrypt-phone-file`() {
 //        val fileIn = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\phone.jpg")
 //        val fileOut = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\decrypt-phone.jpg")
-        val fileIn = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\phone2.jpg")
-        val fileOut = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\decrypt-phone2.jpg")
+//        val fileIn = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\phone2.jpg")
+//        val fileOut = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\decrypt-phone2.jpg")
+        val fileIn = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\phone3.jpg")
+        val fileOut = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\decrypt-phone3.jpg")
         if (fileOut.exists()) {
             fileOut.delete()
         }

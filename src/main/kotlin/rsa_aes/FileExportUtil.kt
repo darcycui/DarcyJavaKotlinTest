@@ -21,8 +21,8 @@ object FileExportUtil {
     fun encryptRSA(data: ByteArray): ByteArray {
         println("原文长度:${data.size}")
         println("originalBytes=${data.toHexString()}")
-        val inputStream =
-            FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\public_key.pem")
+//        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\public_key.pem")
+        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPublic.pem")
         val reader = BufferedReader(InputStreamReader(inputStream))
         val publicKeyPEM = buildString {
             reader.useLines { lines ->
@@ -47,8 +47,8 @@ object FileExportUtil {
     @OptIn(ExperimentalEncodingApi::class, ExperimentalStdlibApi::class)
     fun decryptRSA(encryptedData: ByteArray): ByteArray {
         // 1. 从资源文件读取私钥 PEM 内容（过滤掉头尾标记）
-        val inputStream =
-            FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\private_key.pem")
+//        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\private_key.pem")
+        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPrivate.pem")
 
         val reader = BufferedReader(InputStreamReader(inputStream))
         val privateKeyPEM = buildString {
