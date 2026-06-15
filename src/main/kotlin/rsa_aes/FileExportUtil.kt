@@ -17,68 +17,6 @@ import kotlin.math.min
 
 object FileExportUtil {
 
-    @OptIn(ExperimentalEncodingApi::class, ExperimentalStdlibApi::class)
-    fun encryptRSA(data: ByteArray): ByteArray {
-        println("原文长度:${data.size}")
-        println("originalBytes=${data.toHexString()}")
-//        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\public_key.pem")
-        val inputStream =
-            FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPublic.pem")
-        val reader = BufferedReader(InputStreamReader(inputStream))
-        val publicKeyPEM = buildString {
-            reader.useLines { lines ->
-                lines.filter { !it.startsWith("-----BEGIN") && !it.startsWith("-----END") }
-                    .forEach { append(it) }
-            }
-        }
-//        println("publicKeyPEM=$publicKeyPEM")
-        val publicKeyDER = Base64.decode(publicKeyPEM.toByteArray(), 0)
-        val keySpec = X509EncodedKeySpec(publicKeyDER)
-        val keyFactory = KeyFactory.getInstance("RSA")
-        val publicKey = keyFactory.generatePublic(keySpec)
-        val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey)
-        return cipher.doFinal(data).also {
-            println("加密后长度: ${it.size}")
-            println("encryptedBytes=${it.toHexString()}")
-//            val decryptedBytes = decryptRSA(it)
-        }
-    }
-
-    @OptIn(ExperimentalEncodingApi::class, ExperimentalStdlibApi::class)
-    fun decryptRSA(encryptedData: ByteArray): ByteArray {
-        // 1. 从资源文件读取私钥 PEM 内容（过滤掉头尾标记）
-//        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\private_key.pem")
-        val inputStream =
-            FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPrivate.pem")
-
-        val reader = BufferedReader(InputStreamReader(inputStream))
-        val privateKeyPEM = buildString {
-            reader.useLines { lines ->
-                lines.filter { !it.startsWith("-----BEGIN") && !it.startsWith("-----END") }
-                    .forEach { append(it) }
-            }
-        }
-//        println("privateKeyPEM=$privateKeyPEM")
-
-        // 2. Base64 解码得到 DER 字节
-        val privateKeyDER = Base64.decode(privateKeyPEM.toByteArray(), 0)
-
-        // 3. 生成私钥对象（使用 PKCS#8 格式）
-        val keySpec = PKCS8EncodedKeySpec(privateKeyDER)
-        val keyFactory = KeyFactory.getInstance("RSA")
-        val privateKey = keyFactory.generatePrivate(keySpec)
-
-        // 4. 解密（与加密算法保持一致）
-        val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-        cipher.init(Cipher.DECRYPT_MODE, privateKey)
-        println("解密前长度: ${encryptedData.size}")
-        return cipher.doFinal(encryptedData).also {
-            println("解密后长度: ${it.size}")
-            println("decryptedBytes=${it.toHexString()}")
-        }
-    }
-
     @OptIn(ExperimentalStdlibApi::class)
     fun encryptFileStream(fileIn: File, fileOut: File) {
         // 生成AESKey
@@ -89,7 +27,7 @@ object FileExportUtil {
         val iv = ByteArray(16)
         SecureRandom().nextBytes(iv)
         println("写入AES IV长度：${key.size} iv=${iv.toHexString()}")
-        val encryptedAesKey = encryptRSA(key)
+        val encryptedAesKey = RSAUtil.encryptRSA(key)
         println("写入RSA加密的AES密钥长度：${encryptedAesKey.size}")
         println("写入RSA加密的AES密钥：${encryptedAesKey.toHexString()}")
         val digest = MessageDigest.getInstance("SHA-256")
@@ -144,7 +82,7 @@ object FileExportUtil {
         inputFile.inputStream().use { inputStream ->
             fileOut.outputStream().use { outputStream ->
                 // 1.将RSA加密的AES密钥写入输出流
-                val rsaKey = encryptRSA(key)
+                val rsaKey = RSAUtil.encryptRSA(key)
                 outputStream.write(rsaKey)
                 var bytesRead: Int
                 while (inputStream.read(buffer).also { bytesRead = it } != -1) {
@@ -202,7 +140,7 @@ object FileExportUtil {
                 raf.seek(0)
                 raf.readFully(encryptKey)
                 println("获取RAS加密的AES密钥长度：${encryptKey.size} encryptKey=${encryptKey.toHexString()}")
-                val aesKey = decryptRSA(encryptKey)
+                val aesKey = RSAUtil.decryptRSA(encryptKey)
                 println("AES密钥长度：${aesKey.size} aesKey=${aesKey.toHexString()}")
                 // 读取末尾 hash
                 raf.seek(totalLen - hashLength)

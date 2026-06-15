@@ -1,4 +1,5 @@
 import rsa_aes.FileExportUtil
+import rsa_aes.RSAUtil
 import java.io.File
 import java.io.FileInputStream
 import kotlin.test.Test
@@ -12,9 +13,9 @@ class TestFileExport {
     fun `test-rsa-encrypt-aes-key`() {
         val message = "1234567890abcdef1234567890abcdef"
         println("message=${message}")
-        val encryptedMessage = FileExportUtil.encryptRSA(message.toByteArray())
+        val encryptedMessage = RSAUtil.encryptRSA(message.toByteArray())
         println("encryptedMessage: ${encryptedMessage.toHexString()}")
-        val decryptedMessage = FileExportUtil.decryptRSA(encryptedMessage)
+        val decryptedMessage = RSAUtil.decryptRSA(encryptedMessage)
         val decryptedMessageStr = decryptedMessage.decodeToString()
         println("decryptedMessage: $decryptedMessageStr")
         assertEquals(message, decryptedMessageStr, "RSA加密解密失败")
@@ -68,13 +69,13 @@ class TestFileExport {
         }
         val aesKey = "1234567890abcdef1234567890abcdef".toByteArray()
         println("aesKey: $aesKey")
-        val rsaAESKey = FileExportUtil.encryptRSA(aesKey)
+        val rsaAESKey = RSAUtil.encryptRSA(aesKey)
         fileOut.appendBytes(rsaAESKey)
 
         val readStream = FileInputStream(fileOut)
         val readArray = ByteArray(256)
         readStream.read(readArray)
-        val realKey = FileExportUtil.decryptRSA(readArray)
+        val realKey = RSAUtil.decryptRSA(readArray)
 
 
         val readStr = realKey.toHexString()
