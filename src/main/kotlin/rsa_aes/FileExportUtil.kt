@@ -1,4 +1,4 @@
-package org.example.rsa_aes
+package rsa_aes
 
 import java.io.*
 import java.security.KeyFactory
@@ -22,7 +22,8 @@ object FileExportUtil {
         println("原文长度:${data.size}")
         println("originalBytes=${data.toHexString()}")
 //        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\public_key.pem")
-        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPublic.pem")
+        val inputStream =
+            FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPublic.pem")
         val reader = BufferedReader(InputStreamReader(inputStream))
         val publicKeyPEM = buildString {
             reader.useLines { lines ->
@@ -48,7 +49,8 @@ object FileExportUtil {
     fun decryptRSA(encryptedData: ByteArray): ByteArray {
         // 1. 从资源文件读取私钥 PEM 内容（过滤掉头尾标记）
 //        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\private_key.pem")
-        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPrivate.pem")
+        val inputStream =
+            FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPrivate.pem")
 
         val reader = BufferedReader(InputStreamReader(inputStream))
         val privateKeyPEM = buildString {
@@ -99,36 +101,35 @@ object FileExportUtil {
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
             println("原文件长度：${fileIn.length()}")
+            val cipherOutputStream = CipherOutputStream(fos, cipher)
             FileInputStream(fileIn).use { input ->
                 // 2. 通过 CipherOutputStream 写入加密数据
-                CipherOutputStream(fos, cipher).use { cipherOut ->
-                    // 循环度 每次读取 1MB
+                cipherOutputStream.let { cipherOut ->
                     val buffer = ByteArray(1024 * 1024)
                     var bytesRead: Int
                     while (input.read(buffer).also { bytesRead = it } != -1) {
                         cipherOut.write(buffer, 0, bytesRead)
                         digest.update(buffer, 0, bytesRead)
                     }
-                    cipherOut.flush() // 可选，确保所有数据写出
-                } // 这里 cipherOut 关闭时会自动调用 doFinal() 并刷新所有密文
+                    cipherOut.flush()
+                }
             }
-        }
-
-        // 3. 写入明文尾部
-        val hash256: ByteArray = digest.digest()
-        println("加密文件SHA256长度：${hash256.size} hash=${hash256.toHexString()}")
-        // 重新打开文件追加写入尾部
-        FileOutputStream(fileOut, true).use { fosAppend ->
-            fosAppend.write(iv)
-            fosAppend.write(hash256)
+            // 3. 写入明文尾部
+            val hash256: ByteArray = digest.digest()
+            fos.write(iv)
+            fos.write(hash256)
+            cipherOutputStream.close()
         }
         println("加密文件总长度：${fileOut.length()}")
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     @Deprecated("not secure")
     fun encryptFile(inputFile: File, fileOut: File) {
         val key = generateKey()
+        println("写入AES密钥长度：${key.size} key=${key.toHexString()}")
         val iv = generateIV()
+        println("写入AES IV长度：${key.size} iv=${iv.toHexString()}")
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val secretKey = SecretKeySpec(key, "AES")
         val ivSpec = IvParameterSpec(iv)
@@ -149,8 +150,8 @@ object FileExportUtil {
                 while (inputStream.read(buffer).also { bytesRead = it } != -1) {
                     val encryptedBytes = cipher.update(buffer, 0, bytesRead)
                     // 2.写入加密数据
-                    digest.update(buffer, 0, bytesRead)
                     outputStream.write(encryptedBytes)
+                    digest.update(buffer, 0, bytesRead)
                 }
                 // 处理最后一块数据
                 val finalBytes = cipher.doFinal()
@@ -161,14 +162,9 @@ object FileExportUtil {
                 outputStream.write(iv)
                 // 4.写入校验Hash
                 val hash256 = digest.digest()
+                println("写入hash256:${hash256.toHexString()}")
                 outputStream.write(hash256)
             }
-        }
-
-        // 4.写入校验Hash
-        val hash256 = getFileSHA256(inputFile)
-        FileOutputStream(fileOut, true).use { outputStream ->
-            outputStream.write(hash256)
         }
         val totalLen = fileOut.length()
         println("加密后文件长度：$totalLen")

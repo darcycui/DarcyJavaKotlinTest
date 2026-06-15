@@ -1,4 +1,4 @@
-import org.example.rsa_aes.FileExportUtil
+import rsa_aes.FileExportUtil
 import java.io.File
 import java.io.FileInputStream
 import kotlin.test.Test
