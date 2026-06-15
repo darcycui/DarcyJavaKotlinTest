@@ -166,7 +166,7 @@ object FileExportUtil {
                 while (remaining > 0) {
                     val toRead = min(buffer.size.toLong(), remaining).toInt()
                     val bytesRead = raf.read(buffer, 0, toRead)
-                    if (bytesRead == -1) break // 理论上不会发生，但安全处理
+                    if (bytesRead == -1) break
 
                     val decrypted = aesCipher.update(buffer, 0, bytesRead)
                     if (decrypted.isNotEmpty()) {
