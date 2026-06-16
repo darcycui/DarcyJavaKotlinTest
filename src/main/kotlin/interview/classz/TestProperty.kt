@@ -1,4 +1,5 @@
-package org.example.interview.classz
+package interview.classz
+import exts.logD
 
 data class TestProperty(var school: String) {
     var name: String = "zhangsan"
@@ -8,5 +9,5 @@ data class TestProperty(var school: String) {
 
 fun main() {
     val testProperty = TestProperty("小学")
-    println(testProperty.name)
+    logD(message = testProperty.name)
 }

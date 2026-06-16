@@ -1,13 +1,14 @@
-package org.example.companion
+package companion
+import exts.logD
 
 fun main() {
     val testCompanion = TestCompanion.getInstance()
     testCompanion.test()
     testCompanion.log()
-    println("id: ${testCompanion.id}")
+    logD(message = "id: ${testCompanion.id}")
     // TODO 对拓展属性赋值不起作用
     testCompanion.id = "id-200"
-    println("id: ${testCompanion.id}")
+    logD(message = "id: ${testCompanion.id}")
     // 调用伴生对象的拓展方法
     TestCompanion.hello()
 
@@ -36,11 +37,11 @@ class TestCompanion private constructor() {
         // java静态方法
         @JvmStatic
         fun jvmFunc() {
-            println("jvmFunc")
+            logD(message = "jvmFunc")
         }
     }
 
     fun test() {
-        println("name: $name")
+        logD(message = "name: $name")
     }
 }

@@ -1,4 +1,4 @@
-package org.example.delegate.classs
+package delegate.classs
 
 interface Printer {
     fun printMessage(message: String)

@@ -1,4 +1,5 @@
-package org.example.proxy
+package proxy
+import exts.logD
 
 fun main() {
     val proxy = TestProxy()
@@ -11,7 +12,7 @@ fun main() {
 class TestProxy {
     fun test() {
         val user = User(mapOf("name" to "Tom", "age" to 8))
-        println("name: ${user.name}, age: ${user.age}")
+        logD(message = "name: ${user.name}, age: ${user.age}")
     }
 }
 

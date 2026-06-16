@@ -1,5 +1,6 @@
 package cipher_stream
 
+import exts.logD
 import java.io.File
 
 fun main() {
@@ -14,17 +15,17 @@ fun main() {
     val fileDecrypted = File("${filePrefix}decrypted.txt")
 
 //    // 加密输出流 加密文件
-//    println("加密输出流加密文件")
+//    logD(message = "加密输出流加密文件")
 //    CipherStreamUtil.encryptByCipherOutStream(fileOriginal, fileEncrypted, key.toByteArray(), iv.toByteArray())
 //    // 解密输入流 解密文件
-//    println("解密输入流解密文件")
+//    logD(message = "解密输入流解密文件")
 //    CipherStreamUtil.decryptByCipherInputStream(fileEncrypted, fileDecrypted, key.toByteArray(), iv.toByteArray())
 
 
     // 加密输出流 加密文件并写入hash
-    println("加密输出流加密文件 并写入hash")
+    logD(message = "加密输出流加密文件 并写入hash")
     CipherStreamUtil.encryptByCipherOutStreamWithHash(fileOriginal, fileEncrypted, key.toByteArray(), iv.toByteArray())
     // 解密输入流 解密文件并验证hash
-    println("解密输入流解密文件 并验证hash")
+    logD(message = "解密输入流解密文件 并验证hash")
     CipherStreamUtil.decryptByCipherInputStreamWithHash(fileEncrypted, fileDecrypted, key.toByteArray(), iv.toByteArray())
 }

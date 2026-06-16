@@ -1,5 +1,6 @@
 package cipher_stream
 
+import exts.logD
 import java.io.File
 import java.io.FileOutputStream
 import java.io.RandomAccessFile
@@ -71,7 +72,7 @@ object CipherStreamUtil {
         key: ByteArray,
         iv: ByteArray,
     ) {
-        println("开始加密并写入hash")
+        logD(message = "开始加密并写入hash")
         if (!fileIn.exists()) {
             throw Exception("File not exists")
         }
@@ -104,7 +105,7 @@ object CipherStreamUtil {
         }
         // 写入hash
         val hash = digest.digest()
-        println("写入hash: ${hash.toHexString()}")
+        logD(message = "写入hash: ${hash.toHexString()}")
         // 追加写入文件
         FileOutputStream(fileOut, true).use { fos ->
             fos.write(hash)
@@ -114,7 +115,6 @@ object CipherStreamUtil {
     /**
      * 解密 验证文件末尾的 hash值（32字节）
      */
-
     @OptIn(ExperimentalStdlibApi::class)
     fun decryptByCipherInputStreamWithHash(
         fileIn: File,
@@ -122,7 +122,7 @@ object CipherStreamUtil {
         key: ByteArray,
         iv: ByteArray,
     ) {
-        println("开始解密并验证hash")
+        logD(message = "开始解密并验证hash")
         if (!fileIn.exists()) {
             throw Exception("File not exists")
         }
@@ -150,7 +150,7 @@ object CipherStreamUtil {
                 val expectedHash = ByteArray(hashLength)
                 raf.seek(bodyLength)
                 raf.read(expectedHash)
-                println("expectedHash: ${expectedHash.toHexString()}")
+                logD(message = "expectedHash: ${expectedHash.toHexString()}")
 
                 // 从头读取文件
                 raf.seek(0)
@@ -179,11 +179,11 @@ object CipherStreamUtil {
                 }
                 // 验证hash
                 val actualHash = digest.digest()
-                println("actualHash: ${actualHash.toHexString()}")
+                logD(message = "actualHash: ${actualHash.toHexString()}")
                 if (!actualHash.contentEquals(expectedHash)) {
                     throw Exception("Hash verification failed")
                 } else {
-                    println("Hash verification passed")
+                    logD(message = "Hash verification passed")
                 }
             }
         }

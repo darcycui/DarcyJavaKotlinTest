@@ -26,17 +26,17 @@ fun testParallel() {
         .map { task ->
             CompletableFuture.supplyAsync({
                 task().also {
-                    println("Executing task parallel: $it")
+                    logD(message = "Executing task parallel: $it")
                 } // 执行任务并返回结果
             }, executorService)
         }.collect(Collectors.toList())
 
     CompletableFuture.allOf(*allFutures.toTypedArray()).thenApply {
         for (future in allFutures) {
-            println("Result: ${future.get()}")
+            logD(message = "Result: ${future.get()}")
         }
     }.thenAccept {
-        println("All tasks completed.")
+        logD(message = "All tasks completed.")
     }
     // 关闭线程池
     executorService.shutdown()
@@ -61,8 +61,8 @@ private fun testSerial() {
         finalFuture = finalFuture.thenComposeAsync { prevResult ->
             CompletableFuture.supplyAsync({
                 task().also {
-                    println("prevResult=$prevResult")
-                    println("Executing task serial: $it")
+                    logD(message = "prevResult=$prevResult")
+                    logD(message = "Executing task serial: $it")
                 } // 执行任务并返回结果
             }, executorService)
         }

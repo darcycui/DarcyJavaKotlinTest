@@ -1,6 +1,7 @@
-package org.example.thread.custom.impl
+package thread.custom.impl
+import exts.logD
 
-import org.example.thread.CountBean
+import thread.CountBean
 import java.util.concurrent.locks.ReentrantLock
 
 /**
@@ -21,7 +22,7 @@ class ThreadLockImpl(
                 lock.lock()
                 if (bean.who == whoCurrent) {
                     bean.count += 1
-                    println("Thread is $name: ${bean.count}")
+                    logD(message = "Thread is $name: ${bean.count}")
                     Thread.sleep(1000)
                     // 更新who
                     bean.who = whoNext

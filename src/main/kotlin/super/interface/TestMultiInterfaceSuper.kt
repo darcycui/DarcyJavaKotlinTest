@@ -1,4 +1,5 @@
-package org.example.`super`.`interface`
+package `super`.`interface`
+import exts.logD
 
 fun main() {
     val testMultiInterfaceSuper = TestMultiInterfaceSuper()
@@ -14,18 +15,18 @@ class TestMultiInterfaceSuper : A, B {
         super<A>.fun1()
         // TODO 调用父类B的方法
         super<B>.fun1()
-        println("funMulti-->fun1")
+        logD(message = "funMulti-->fun1")
     }
 }
 
 interface A {
     fun fun1() {
-        println("fun1 from A")
+        logD(message = "fun1 from A")
     }
 }
 
 interface B {
     fun fun1() {
-        println("fun1 from B")
+        logD(message = "fun1 from B")
     }
 }

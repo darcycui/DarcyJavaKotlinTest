@@ -1,5 +1,6 @@
 package rsa_aes
 
+import exts.logD
 import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -13,8 +14,8 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 object RSAUtil {
     @OptIn(ExperimentalEncodingApi::class, ExperimentalStdlibApi::class)
     fun encryptRSA(data: ByteArray): ByteArray {
-        println("原文长度:${data.size}")
-        println("originalBytes=${data.toHexString()}")
+        logD(message = "原文长度:${data.size}")
+        logD(message = "originalBytes=${data.toHexString()}")
 //        val inputStream = FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\public_key.pem")
         val inputStream =
             FileInputStream("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\RSAPublic.pem")
@@ -25,7 +26,7 @@ object RSAUtil {
                     .forEach { append(it) }
             }
         }
-//        println("publicKeyPEM=$publicKeyPEM")
+//        logD(message = "publicKeyPEM=$publicKeyPEM")
         val publicKeyDER = Base64.decode(publicKeyPEM.toByteArray(), 0)
         val keySpec = X509EncodedKeySpec(publicKeyDER)
         val keyFactory = KeyFactory.getInstance("RSA")
@@ -33,8 +34,8 @@ object RSAUtil {
         val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
         cipher.init(Cipher.ENCRYPT_MODE, publicKey)
         return cipher.doFinal(data).also {
-            println("加密后长度: ${it.size}")
-            println("encryptedBytes=${it.toHexString()}")
+            logD(message = "加密后长度: ${it.size}")
+            logD(message = "encryptedBytes=${it.toHexString()}")
 //            val decryptedBytes = decryptRSA(it)
         }
     }
@@ -53,7 +54,7 @@ object RSAUtil {
                     .forEach { append(it) }
             }
         }
-//        println("privateKeyPEM=$privateKeyPEM")
+//        logD(message = "privateKeyPEM=$privateKeyPEM")
 
         // 2. Base64 解码得到 DER 字节
         val privateKeyDER = Base64.decode(privateKeyPEM.toByteArray(), 0)
@@ -66,10 +67,10 @@ object RSAUtil {
         // 4. 解密（与加密算法保持一致）
         val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
         cipher.init(Cipher.DECRYPT_MODE, privateKey)
-        println("解密前长度: ${encryptedData.size}")
+        logD(message = "解密前长度: ${encryptedData.size}")
         return cipher.doFinal(encryptedData).also {
-            println("解密后长度: ${it.size}")
-            println("decryptedBytes=${it.toHexString()}")
+            logD(message = "解密后长度: ${it.size}")
+            logD(message = "decryptedBytes=${it.toHexString()}")
         }
     }
 }

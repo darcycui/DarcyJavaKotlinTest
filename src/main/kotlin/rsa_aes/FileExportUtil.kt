@@ -1,5 +1,6 @@
 package rsa_aes
 
+import exts.logD
 import java.io.*
 import java.security.KeyFactory
 import java.security.MessageDigest
@@ -22,14 +23,14 @@ object FileExportUtil {
         // 生成AESKey
         val key = ByteArray(32)
         SecureRandom().nextBytes(key)
-        println("写入AES密钥长度：${key.size} key=${key.toHexString()}")
+        logD(message = "写入AES密钥长度：${key.size} key=${key.toHexString()}")
         // 生成IV
         val iv = ByteArray(16)
         SecureRandom().nextBytes(iv)
-        println("写入AES IV长度：${key.size} iv=${iv.toHexString()}")
+        logD(message = "写入AES IV长度：${key.size} iv=${iv.toHexString()}")
         val encryptedAesKey = RSAUtil.encryptRSA(key)
-        println("写入RSA加密的AES密钥长度：${encryptedAesKey.size}")
-        println("写入RSA加密的AES密钥：${encryptedAesKey.toHexString()}")
+        logD(message = "写入RSA加密的AES密钥长度：${encryptedAesKey.size}")
+        logD(message = "写入RSA加密的AES密钥：${encryptedAesKey.toHexString()}")
         val digest = MessageDigest.getInstance("SHA-256")
 
         // 单个底层输出流，追加模式（true）
@@ -38,7 +39,7 @@ object FileExportUtil {
             fos.write(encryptedAesKey)
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
-            println("原文件长度：${fileIn.length()}")
+            logD(message = "原文件长度：${fileIn.length()}")
             val cipherOutputStream = CipherOutputStream(fos, cipher)
             FileInputStream(fileIn).use { input ->
                 // 2. 通过 CipherOutputStream 写入加密数据
@@ -58,16 +59,16 @@ object FileExportUtil {
             fos.write(hash256)
             cipherOutputStream.close()
         }
-        println("加密文件总长度：${fileOut.length()}")
+        logD(message = "加密文件总长度：${fileOut.length()}")
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     @Deprecated("not secure")
     fun encryptFile(inputFile: File, fileOut: File) {
         val key = generateKey()
-        println("写入AES密钥长度：${key.size} key=${key.toHexString()}")
+        logD(message = "写入AES密钥长度：${key.size} key=${key.toHexString()}")
         val iv = generateIV()
-        println("写入AES IV长度：${key.size} iv=${iv.toHexString()}")
+        logD(message = "写入AES IV长度：${key.size} iv=${iv.toHexString()}")
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         val secretKey = SecretKeySpec(key, "AES")
         val ivSpec = IvParameterSpec(iv)
@@ -100,12 +101,12 @@ object FileExportUtil {
                 outputStream.write(iv)
                 // 4.写入校验Hash
                 val hash256 = digest.digest()
-                println("写入hash256:${hash256.toHexString()}")
+                logD(message = "写入hash256:${hash256.toHexString()}")
                 outputStream.write(hash256)
             }
         }
         val totalLen = fileOut.length()
-        println("加密后文件长度：$totalLen")
+        logD(message = "加密后文件长度：$totalLen")
     }
 
 
@@ -124,7 +125,7 @@ object FileExportUtil {
         rsaKeyLength: Int = 256,
     ) {
         val totalLen = fileIn.length()
-        println("加密文件总长度：$totalLen")
+        logD(message = "加密文件总长度：$totalLen")
         val ivLength = 16
         val hashLength = 32
         val expectedHash = ByteArray(hashLength)
@@ -139,18 +140,18 @@ object FileExportUtil {
                 val encryptKey = ByteArray(rsaKeyLength)
                 raf.seek(0)
                 raf.readFully(encryptKey)
-                println("获取RAS加密的AES密钥长度：${encryptKey.size} encryptKey=${encryptKey.toHexString()}")
+                logD(message = "获取RAS加密的AES密钥长度：${encryptKey.size} encryptKey=${encryptKey.toHexString()}")
                 val aesKey = RSAUtil.decryptRSA(encryptKey)
-                println("AES密钥长度：${aesKey.size} aesKey=${aesKey.toHexString()}")
+                logD(message = "AES密钥长度：${aesKey.size} aesKey=${aesKey.toHexString()}")
                 // 读取末尾 hash
                 raf.seek(totalLen - hashLength)
                 raf.readFully(expectedHash)
-                println("期望的hash: expectedHash=${expectedHash.toHexString()}")
+                logD(message = "期望的hash: expectedHash=${expectedHash.toHexString()}")
                 // 读取末尾 IV
                 raf.seek(totalLen - hashLength - ivLength)
                 val iv = ByteArray(ivLength)
                 raf.readFully(iv)
-                println("读取AES的iv长度：${iv.size} iv=${iv.toHexString()}")
+                logD(message = "读取AES的iv长度：${iv.size} iv=${iv.toHexString()}")
                 // AES 解密
                 val aesCipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
                 val secretKeySpec = SecretKeySpec(aesKey, "AES")
@@ -159,7 +160,7 @@ object FileExportUtil {
                 // 回到内容部分，循环读取
                 raf.seek(rsaKeyLength.toLong())
                 val bodyLen = totalLen - rsaKeyLength - hashLength - ivLength
-                println("解密前文件大小：$bodyLen")
+                logD(message = "解密前文件大小：$bodyLen")
                 val buffer = ByteArray(1024 * 1024) // 缓冲区大小可根据需要调整，如 1MB = 1024 * 1024
                 var remaining = bodyLen
 
@@ -189,9 +190,9 @@ object FileExportUtil {
 
         // 5. 完整性校验
         val actualHash = digest.digest()
-        println("解密后文件大小: ${fileOut.length()}")
-        println("预期哈希值: ${expectedHash.toHexString()}")
-        println("实际哈希值: ${actualHash.toHexString()}")
+        logD(message = "解密后文件大小: ${fileOut.length()}")
+        logD(message = "预期哈希值: ${expectedHash.toHexString()}")
+        logD(message = "实际哈希值: ${actualHash.toHexString()}")
         require(actualHash.contentEquals(expectedHash)) {
             "文件完整性校验失败：SHA256 不匹配"
         }

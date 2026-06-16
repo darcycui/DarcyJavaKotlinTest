@@ -1,11 +1,13 @@
-package org.example.companion
+package companion
+
+import exts.logD
 
 fun TestCompanion.Companion.hello() {
-    println("伴生对象的拓展方法: hello")
+    logD(message = "伴生对象的拓展方法: hello")
 }
 
 fun TestCompanion.log() {
-    println("拓展方法: log")
+    logD(message = "拓展方法: log")
 }
 
 /**

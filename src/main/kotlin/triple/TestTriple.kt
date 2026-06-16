@@ -1,4 +1,5 @@
-package org.example.triple
+package triple
+import exts.logD
 
 fun main() {
     TestTriple.testTriple()
@@ -8,9 +9,9 @@ class TestTriple {
     companion object {
         fun testTriple(){
             getLengthWidthHeight()?.let {
-                println("$it")
+                logD(message = "$it")
                 // 获取第一个值
-                println("length=${it.first} width=${it.second} height=${it.third}")
+                logD(message = "length=${it.first} width=${it.second} height=${it.third}")
             }
         }
         /**

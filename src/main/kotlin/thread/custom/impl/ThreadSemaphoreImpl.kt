@@ -1,6 +1,7 @@
-package org.example.thread.custom.impl
+package thread.custom.impl
+import exts.logD
 
-import org.example.thread.CountBean
+import thread.CountBean
 
 /**
  * 线程顺序执行 semaphore 信号量实现
@@ -19,7 +20,7 @@ class ThreadSemaphoreImpl(
                 // 获取信号量
                 currentSemaphore?.acquire()
                 bean.count += 1
-                println("Thread is $name: ${bean.count}")
+                logD(message = "Thread is $name: ${bean.count}")
                 Thread.sleep(1000)
                 bean.who = whoNext
                 // 释放下一个线程的信号量

@@ -1,6 +1,7 @@
-package org.example.thread.custom.impl
+package thread.custom.impl
+import exts.logD
 
-import org.example.thread.CountBean
+import thread.CountBean
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -20,7 +21,7 @@ class ThreadCountdownLatchImpl(
                 // 等待 countdownLatchWaited 减到 0
                 countdownLatchWaited!!.await()
                 bean.count += 1
-                println("Thread is $name count: ${bean.count}")
+                logD(message = "Thread is $name count: ${bean.count}")
                 Thread.sleep(1000)
 
                 // 创建新的 countdownLatchWaited

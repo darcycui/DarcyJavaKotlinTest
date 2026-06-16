@@ -1,4 +1,5 @@
-package org.example.proxy
+package proxy
+import exts.logD
 
 fun main() {
     val testClassProxy = TestClassProxy()
@@ -22,7 +23,7 @@ interface IUser {
 
 class UserA(val name: String) : IUser {
     override fun info() {
-        println("UserA name: $name")
+        logD(message = "UserA name: $name")
     }
 }
 
@@ -30,9 +31,9 @@ class UserA(val name: String) : IUser {
 class UserB(private val userA: UserA) : IUser by userA {
     override fun info() {
         // 在A的实现之前添加逻辑
-        println("UserB--before--")
+        logD(message = "UserB--before--")
         userA.info()
         // 在A的实现之后添加逻辑
-        println("UserB--after--")
+        logD(message = "UserB--after--")
     }
 }

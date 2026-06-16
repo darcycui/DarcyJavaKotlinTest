@@ -1,4 +1,5 @@
-package org.example.triple
+package triple
+import exts.logD
 
 fun main() {
     TestPair.testPair()
@@ -8,9 +9,9 @@ class TestPair {
     companion object{
         fun testPair(){
             getWidthHeight()?.let {
-                println("it=$it")
+                logD(message = "it=$it")
                 // 获取Pair的第一个值、第二个值
-                println("width = ${it.first}, height = ${it.second}")
+                logD(message = "width = ${it.first}, height = ${it.second}")
             }
         }
 

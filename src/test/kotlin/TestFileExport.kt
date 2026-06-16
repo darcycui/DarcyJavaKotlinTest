@@ -4,6 +4,7 @@ import java.io.File
 import java.io.FileInputStream
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import exts.logD
 
 
 class TestFileExport {
@@ -12,12 +13,12 @@ class TestFileExport {
     @Test
     fun `test-rsa-encrypt-aes-key`() {
         val message = "1234567890abcdef1234567890abcdef"
-        println("message=${message}")
+        logD(message = "message=${message}")
         val encryptedMessage = RSAUtil.encryptRSA(message.toByteArray())
-        println("encryptedMessage: ${encryptedMessage.toHexString()}")
+        logD(message = "encryptedMessage: ${encryptedMessage.toHexString()}")
         val decryptedMessage = RSAUtil.decryptRSA(encryptedMessage)
         val decryptedMessageStr = decryptedMessage.decodeToString()
-        println("decryptedMessage: $decryptedMessageStr")
+        logD(message = "decryptedMessage: $decryptedMessageStr")
         assertEquals(message, decryptedMessageStr, "RSA加密解密失败")
 
     }
@@ -68,7 +69,7 @@ class TestFileExport {
             fileOut.delete()
         }
         val aesKey = "1234567890abcdef1234567890abcdef".toByteArray()
-        println("aesKey: $aesKey")
+        logD(message = "aesKey: $aesKey")
         val rsaAESKey = RSAUtil.encryptRSA(aesKey)
         fileOut.appendBytes(rsaAESKey)
 
@@ -79,7 +80,7 @@ class TestFileExport {
 
 
         val readStr = realKey.toHexString()
-        println("readStr: $readStr")
+        logD(message = "readStr: $readStr")
         assertEquals(aesKey.toHexString(), readStr, "写入和读取的Key不一致")
     }
 

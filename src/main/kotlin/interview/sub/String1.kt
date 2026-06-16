@@ -7,13 +7,13 @@ object String1 {
         val str3 = String("hello world".toCharArray())
         val str4 = StringBuilder("hello world").toString()
         // 比较字符串内容
-        println("str==str2 ${str == str2}") // true
-        println("str==str3 ${str == str3}") // true
-        println("str==str4 ${str == str4}") // true
+        logD(message = "str==str2 ${str == str2}") // true
+        logD(message = "str==str3 ${str == str3}") // true
+        logD(message = "str==str4 ${str == str4}") // true
         // 比较引用地址
-        println("str===str2 ${str === str2}") // true
-        println("str===str3 ${str === str3}") // false
-        println("str===str4 ${str === str4}") // false
+        logD(message = "str===str2 ${str === str2}") // true
+        logD(message = "str===str3 ${str === str3}") // false
+        logD(message = "str===str4 ${str === str4}") // false
     }
 }
 fun main() {

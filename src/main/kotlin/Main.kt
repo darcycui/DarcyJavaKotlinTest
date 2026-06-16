@@ -1,15 +1,14 @@
-package org.example
 
-import java.nio.file.Files
+import exts.logD
 
 fun main() {
-    println("Hello World!")
+    logD(message = "Hello World!")
     var selector = Selector {
-        println("it=$it")
+        logD(message = "it=$it")
     }
     selector.doSomething()
     selector.responseUI = null
     repeat(10) {
-        println("count=$it")
+        logD(message = "count=$it")
     }
 }

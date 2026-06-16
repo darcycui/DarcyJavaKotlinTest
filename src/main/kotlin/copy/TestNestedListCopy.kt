@@ -1,4 +1,5 @@
-package org.example.copy
+package copy
+import exts.logD
 
 fun main() {
     val accountsState = AccountsState(
@@ -10,10 +11,10 @@ fun main() {
     val state = AccountManageState(
         accountsState = accountsState
     )
-    println("state=${System.identityHashCode(state)}")
-    println("state.accountsState=${System.identityHashCode(state.accountsState)}")
-    println("accountsState.accountsShown=${System.identityHashCode(state.accountsState.accountsShown)}")
-    println("list-->${state.accountsState.accountsShown}")
+    logD(message = "state=${System.identityHashCode(state)}")
+    logD(message = "state.accountsState=${System.identityHashCode(state.accountsState)}")
+    logD(message = "accountsState.accountsShown=${System.identityHashCode(state.accountsState.accountsShown)}")
+    logD(message = "list-->${state.accountsState.accountsShown}")
 
 //    val stateNew = state.copy(
 //        accountsState = state.accountsState.copy(
@@ -31,13 +32,13 @@ fun main() {
             accountsShown = accountsShownNew
         )
     )
-    println("state=${System.identityHashCode(stateNew)}")
-    println("state.accountsState=${System.identityHashCode(stateNew.accountsState)}")
-    println("accountsState.accountsShown=${System.identityHashCode(stateNew.accountsState.accountsShown)}")
-    println("list-->${stateNew.accountsState.accountsShown}")
-    println("stateNew==state ${stateNew == state}")
-    println("stateNew.accountsState==state.accountsState ${stateNew.accountsState == state.accountsState}")
-    println("stateNew.accountsState.accountsShown==state.accountsState.accountsShown ${stateNew.accountsState.accountsShown == state.accountsState.accountsShown}")
+    logD(message = "state=${System.identityHashCode(stateNew)}")
+    logD(message = "state.accountsState=${System.identityHashCode(stateNew.accountsState)}")
+    logD(message = "accountsState.accountsShown=${System.identityHashCode(stateNew.accountsState.accountsShown)}")
+    logD(message = "list-->${stateNew.accountsState.accountsShown}")
+    logD(message = "stateNew==state ${stateNew == state}")
+    logD(message = "stateNew.accountsState==state.accountsState ${stateNew.accountsState == state.accountsState}")
+    logD(message = "stateNew.accountsState.accountsShown==state.accountsState.accountsShown ${stateNew.accountsState.accountsShown == state.accountsState.accountsShown}")
 
 
 }

@@ -1,7 +1,8 @@
-package org.example.delegate.classs
+package delegate.classs
+import exts.logD
 
 class ConsolePrinterImpl : Printer {
     override fun printMessage(message: String) {
-        println(message)
+        logD(message = message)
     }
 }

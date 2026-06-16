@@ -1,4 +1,5 @@
-package org.example.lambda
+package lambda
+import exts.logD
 
 fun main() {
     TestLambda().test()
@@ -24,11 +25,11 @@ class TestLambda {
      */
     fun receiverWrapper2(receiver: Int.(a: Int, b: Int, close: () -> Unit) -> Float): Double {
 //        return receiver.invoke(10, 20, 30) {
-//            println("close running")
+//            logD(message = "close running")
 //        }.toDouble()
         val num: Int = 100
         return num.receiver(200, 300) {
-            println("close running2")
+            logD(message = "close running2")
         }.toDouble()
     }
 
@@ -36,19 +37,19 @@ class TestLambda {
         val result = lambdaWrapper { a, b ->
             a + b
         }
-        println("result=$result")
+        logD(message = "result=$result")
 
         val result2 = receiverWrapper { a, b ->
             // 带有接收者的函数字面值 字面值内部的this就是接收者(this可以省略)
             this.plus(a + b).toFloat()
         }
-        println("result2=$result2")
+        logD(message = "result2=$result2")
 
         val result3 = receiverWrapper2 { a, b, close ->
             // 这里调用 close
             close.invoke()
             this.plus(a + b).toFloat()
         }
-        println("result3=$result3")
+        logD(message = "result3=$result3")
     }
 }

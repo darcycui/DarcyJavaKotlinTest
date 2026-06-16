@@ -1,8 +1,8 @@
-package org.example
 
+import exts.logD
 fun main() {
     val sql = "PRAGMA cipher_kdf_algorithm = 'PBKDF2_HMAC_SHA512';"
-    println("sql=$sql")
+    logD(message = "sql=$sql")
     val sql2 = "PRAGMA cipher_kdf_algorithm = \'PBKDF2_HMAC_SHA512\';"
-    println("sql2=$sql2")
+    logD(message = "sql2=$sql2")
 }

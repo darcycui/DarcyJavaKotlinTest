@@ -1,4 +1,5 @@
-package org.example.`object`.statement
+package `object`.statement
+import exts.logD
 
 fun main() {
     val testObjectStatement = TestObjectStatement()
@@ -17,27 +18,27 @@ class TestObjectStatement {
     }
 
     fun test() {
-        println("-->${greeting.hello} ${greeting.world}")
+        logD(message = "-->${greeting.hello} ${greeting.world}")
         // greeting type: class org.example.object.statement.TestObjectStatement$greeting$1
-        println("greeting type: ${greeting.javaClass}")
+        logD(message = "greeting type: ${greeting.javaClass}")
     }
 
     // 匿名对象实现接口, 一般赋值给私有变量
     private fun getObject() = object : X, Y {
         val name = "Tom"
         override fun funX() {
-            println("funX")
+            logD(message = "funX")
         }
 
         override fun funY() {
-            println("funY")
+            logD(message = "funY")
         }
     }
 
     fun test2() {
         getObject().funX()
         getObject().funY()
-        println("getObject()-->" + getObject().name)
+        logD(message = "getObject()-->" + getObject().name)
     }
 }
 

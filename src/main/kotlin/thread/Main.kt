@@ -1,6 +1,6 @@
-package org.example.thread
+package thread
 
-import org.example.thread.custom.impl.*
+import thread.custom.impl.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.CyclicBarrier
 import java.util.concurrent.Semaphore

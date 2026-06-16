@@ -1,4 +1,5 @@
-package org.example.delegate.classs
+package delegate.classs
+import exts.logD
 
 /**
  * 类委托/类代理
@@ -6,8 +7,8 @@ package org.example.delegate.classs
 class MessageProcessor(private val printer: Printer) : Printer by printer{
     override fun printMessage(message: String){
         // 可以在代理类执行前/执行后添加额外逻辑
-        println("before+++")
+        logD(message = "before+++")
         printer.printMessage(message)
-        println("after---")
+        logD(message = "after---")
     }
 }

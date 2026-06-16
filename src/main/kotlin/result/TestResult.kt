@@ -1,8 +1,7 @@
-package org.example.result
+package result
+import exts.logD
 
-import andThen
 import dispatch
-import zip
 
 fun main() {
     val testClass = TestResult()
@@ -13,20 +12,20 @@ fun main() {
     // 1.测试Result基本操作
 //    val result: Result<String> = testClass.getResult(result)
 //    result.onSuccess {
-//        println("success: $it")
+//        logD(message = "success: $it")
 //    }.onFailure {
-//        println("error: $it")
+//        logD(message = "error: $it")
 //    }.getOrDefault("default")
-//    println("result=$result")
+//    logD(message = "result=$result")
 
     // 2.测试Result串行操作--TODO 推荐使用
 //    testClass.uploadHeader(upload)
 //        .andThen { testClass.updateUserInfo(update) }
 //        .onSuccess {
-//            println("addThen success: $it")
+//            logD(message = "addThen success: $it")
 //        }
 //        .onFailure {
-//            println("addThen error: $it")
+//            logD(message = "addThen error: $it")
 //        }
 
     // 3.测试Result并行操作
@@ -35,14 +34,14 @@ fun main() {
 //        val result2 = testClass.updateUserInfo(update)
 //        result1 to result2
 //    }.onSuccess {
-//        println("zip success: $it")
+//        logD(message = "zip success: $it")
 //    }.onFailure {
-//        println("zip error: $it")
+//        logD(message = "zip error: $it")
 //    }
 
     // 4.测试Result分发操作
     testClass.getResult(result).dispatch {
-        println("dispatch: $it")
+        logD(message = "dispatch: $it")
     }
 }
 

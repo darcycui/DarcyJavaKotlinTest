@@ -1,4 +1,5 @@
-package org.example.proxy
+package proxy
+import exts.logD
 
 import java.util.*
 import kotlin.properties.ReadWriteProperty
@@ -15,11 +16,11 @@ fun main() {
 class TestFieldProxy {
     fun test() {
         val person = Person(1,"tom","password1")
-        println(person) // TOM
+        logD(message = person.toString()) // TOM
         person.name = "jerry"
         person.password = "password2"
         person.field = "field new"
-        println(person)// JERRY
+        logD(message = person.toString())// JERRY
 
     }
 }

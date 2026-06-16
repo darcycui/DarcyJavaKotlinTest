@@ -2,7 +2,7 @@ package org.example.interview.sub
 
 class Lazy1 {
     private val lazyVal = lazy {
-        println("init lazy")
+        logD(message = "init lazy")
         "value"
     }
 
@@ -11,6 +11,6 @@ class Lazy1 {
 
 fun main() {
     val bean = Lazy1()
-    bean.getLazyVal().apply { println(this) }
-    bean.getLazyVal().apply { println(this) }
+    bean.getLazyVal().apply { logD(message = this) }
+    bean.getLazyVal().apply { logD(message = this) }
 }

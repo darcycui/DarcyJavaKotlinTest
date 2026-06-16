@@ -6,6 +6,7 @@ import encrypt.ecc.kdf.ChainKey
 import encrypt.ecc.kdf.HKDF
 import encrypt.ecc.user.Alice
 import encrypt.ecc.user.Bob
+import exts.logD
 import java.security.KeyPair
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
@@ -50,9 +51,9 @@ class X3DHExchange {
         SK2 = bobX3DH()
         EncryptUtil.log("Bob计算共享密钥", SK2)
         if (SK != null && SK.contentEquals(SK2)) {
-            println("Alice 和 Bob 的密钥相同")
+            logD(message = "Alice 和 Bob 的密钥相同")
         } else {
-            println("Alice 和 Bob 的密钥不相同")
+            logD(message = "Alice 和 Bob 的密钥不相同")
         }
         // 双棘轮(DH棘轮 KDF棘轮)
         doubleRatchet()
@@ -153,9 +154,9 @@ class X3DHExchange {
         var messageKeyBob = receiverChainBob.messageKeys // 计算消息密钥
         EncryptUtil.log("Bob的消息密钥-1", messageKeyBob)
         if (messageKeyAlice.contentEquals(messageKeyBob)) {
-            println("Alice 和 Bob 的密钥相同-1")
+            logD(message = "Alice 和 Bob 的密钥相同-1")
         } else {
-            println("Alice 和 Bob 的密钥不相同-1")
+            logD(message = "Alice 和 Bob 的密钥不相同-1")
         }
         receiverChainBob = receiverChainBob.nextChainKey // 计算新的接收链密钥
 
@@ -191,9 +192,9 @@ class X3DHExchange {
         messageKeyAlice = receiverChainAlice.messageKeys // 计算消息密钥
         EncryptUtil.log("Alice的消息密钥-2", messageKeyAlice)
         if (messageKeyAlice.contentEquals(messageKeyBob)) {
-            println("Alice 和 Bob 的密钥相同-2")
+            logD(message = "Alice 和 Bob 的密钥相同-2")
         } else {
-            println("Alice 和 Bob 的密钥不相同-2")
+            logD(message = "Alice 和 Bob 的密钥不相同-2")
         }
         receiverChainAlice = receiverChainAlice.nextChainKey // 计算新的接收链密钥
 
@@ -244,9 +245,9 @@ class X3DHExchange {
         messageKeyBob = receiverChainBob.messageKeys // 计算消息密钥
         EncryptUtil.log("Bob的消息密钥-3", messageKeyBob)
         if (messageKeyAlice.contentEquals(messageKeyBob)) {
-            println("Alice 和 Bob 的密钥相同-3")
+            logD(message = "Alice 和 Bob 的密钥相同-3")
         } else {
-            println("Alice 和 Bob 的密钥不相同-3")
+            logD(message = "Alice 和 Bob 的密钥不相同-3")
         }
         receiverChainBob = receiverChainBob.nextChainKey // 计算新的接收链密钥
         // 如果消息乱序 先收到消息-5 就需要存储消息-3的密钥
@@ -260,9 +261,9 @@ class X3DHExchange {
         val messageKeyBobSecond = receiverChainBob.messageKeys // 计算消息密钥
         EncryptUtil.log("Bob的消息密钥-4", messageKeyBobSecond)
         if (messageKeyAliceSecond.contentEquals(messageKeyBobSecond)) {
-            println("Alice 和 Bob 的密钥相同-4")
+            logD(message = "Alice 和 Bob 的密钥相同-4")
         } else {
-            println("Alice 和 Bob 的密钥不相同-4")
+            logD(message = "Alice 和 Bob 的密钥不相同-4")
         }
         receiverChainBob = receiverChainBob.nextChainKey // 计算新的接收链密钥
         // 如果消息乱序 先收到消息-5 就需要存储消息-4的密钥
@@ -275,9 +276,9 @@ class X3DHExchange {
         val messageKeyBobThird = receiverChainBob.messageKeys // 计算消息密钥
         EncryptUtil.log("Bob的消息密钥-5", messageKeyBobThird)
         if (messageKeyAliceThird.contentEquals(messageKeyBobThird)) {
-            println("Alice 和 Bob 的密钥相同-5")
+            logD(message = "Alice 和 Bob 的密钥相同-5")
         } else {
-            println("Alice 和 Bob 的密钥不相同-5")
+            logD(message = "Alice 和 Bob 的密钥不相同-5")
         }
         receiverChainBob = receiverChainBob.nextChainKey // 计算新的接收链密钥
         // 收到消息-5 messageIndexSend==messageIndexReceive
@@ -285,7 +286,7 @@ class X3DHExchange {
             messageKeysMap[messageIndexReceive] = messageKeyBobThird
             messageIndexReceive++
         }
-        println("存储的消息密钥:$messageKeysMap")
+        logD(message = "存储的消息密钥:$messageKeysMap")
     }
 
 

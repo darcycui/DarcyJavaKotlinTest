@@ -1,4 +1,5 @@
-package org.example.coroutine.learn
+package coroutine.learn
+import exts.logD
 
 import kotlinx.coroutines.*
 
@@ -20,5 +21,5 @@ fun main() {
 }
 
 private fun printWithThread(message: String) {
-    println("${Thread.currentThread().name} $message")
+    logD(message = "${Thread.currentThread().name} $message")
 }

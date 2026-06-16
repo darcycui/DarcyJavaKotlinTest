@@ -1,7 +1,7 @@
-package org.example.thread.custom.impl
+package thread.custom.impl
+import exts.logD
 
-import org.example.thread.CountBean
-import java.util.concurrent.CountDownLatch
+import thread.CountBean
 
 /**
  * 线程顺序执行 cyclicBarrier实现
@@ -17,7 +17,7 @@ class ThreadCyclicBarrierImpl(
             try {
                 if (bean.who == whoCurrent) {
                     bean.count += 1
-                    println("Thread is $name count: ${bean.count}")
+                    logD(message = "Thread is $name count: ${bean.count}")
                     Thread.sleep(1000)
                     val barrierWaited = bean.cyclicBarrier
                     // 等待所有线程到达屏障点
