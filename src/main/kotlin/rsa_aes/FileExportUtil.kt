@@ -20,6 +20,9 @@ object FileExportUtil {
 
     @OptIn(ExperimentalStdlibApi::class)
     fun encryptFileStream(fileIn: File, fileOut: File) {
+        if (fileOut.exists()) {
+            fileOut.delete()
+        }
         // 生成AESKey
         val key = ByteArray(32)
         SecureRandom().nextBytes(key)
@@ -40,10 +43,9 @@ object FileExportUtil {
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key, "AES"), IvParameterSpec(iv))
             logD(message = "原文件长度：${fileIn.length()}")
-            val cipherOutputStream = CipherOutputStream(fos, cipher)
             FileInputStream(fileIn).use { input ->
                 // 2. 通过 CipherOutputStream 写入加密数据
-                cipherOutputStream.let { cipherOut ->
+                CipherOutputStream(fos, cipher).use { cipherOut ->
                     val buffer = ByteArray(1024 * 1024)
                     var bytesRead: Int
                     while (input.read(buffer).also { bytesRead = it } != -1) {
@@ -53,11 +55,14 @@ object FileExportUtil {
                     cipherOut.flush()
                 }
             }
-            // 3. 写入明文尾部
-            val hash256: ByteArray = digest.digest()
+        }
+
+        // 3. 写入明文尾部
+        val hash256: ByteArray = digest.digest()
+        logD(message = "写入hash256:长度：${hash256.size} ${hash256.toHexString()}")
+        FileOutputStream(fileOut, true).use { fos ->
             fos.write(iv)
             fos.write(hash256)
-            cipherOutputStream.close()
         }
         logD(message = "加密文件总长度：${fileOut.length()}")
     }
@@ -65,6 +70,9 @@ object FileExportUtil {
     @OptIn(ExperimentalStdlibApi::class)
     @Deprecated("not secure")
     fun encryptFile(inputFile: File, fileOut: File) {
+        if (fileOut.exists()) {
+            fileOut.delete()
+        }
         val key = generateKey()
         logD(message = "写入AES密钥长度：${key.size} key=${key.toHexString()}")
         val iv = generateIV()
@@ -124,6 +132,9 @@ object FileExportUtil {
         fileOut: File,
         rsaKeyLength: Int = 256,
     ) {
+        if (fileOut.exists()) {
+            fileOut.delete()
+        }
         val totalLen = fileIn.length()
         logD(message = "加密文件总长度：$totalLen")
         val ivLength = 16
@@ -228,6 +239,14 @@ object FileExportUtil {
                 md.update(buffer, 0, bytesRead)
             }
             return md.digest()
+        }
+    }
+
+    fun saveToFile(inputStream: InputStream, file: File) {
+        inputStream.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
         }
     }
 }

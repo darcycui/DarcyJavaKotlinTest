@@ -1,5 +1,7 @@
 package xor
 
+import exts.logD
+
 fun main() {
 //    val originalString = "abc"
     val originalString = "45678"

@@ -1,5 +1,7 @@
 package org.example.interview.sub.coroutine
 
+import exts.logD
+
 object CPS {
     fun addNormal(a: Int, b: Int): Int {
         logD(message = "普通方法")

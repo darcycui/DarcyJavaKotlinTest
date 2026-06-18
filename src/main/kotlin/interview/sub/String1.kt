@@ -1,5 +1,7 @@
 package org.example.interview.sub
 
+import exts.logD
+
 object String1 {
     fun stringEqual() {
         val str = "hello world"

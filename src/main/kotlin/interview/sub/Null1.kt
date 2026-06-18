@@ -1,5 +1,7 @@
 package org.example.interview.sub
 
+import exts.logD
+
 object Null1 {
     fun nullable(s: String?) {
         s?.let {
