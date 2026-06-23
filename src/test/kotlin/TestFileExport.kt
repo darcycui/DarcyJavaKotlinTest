@@ -20,7 +20,6 @@ class TestFileExport {
         val decryptedMessageStr = decryptedMessage.decodeToString()
         logD(message = "decryptedMessage: $decryptedMessageStr")
         assertEquals(message, decryptedMessageStr, "RSA加密解密失败")
-
     }
 
     @Test
@@ -45,7 +44,6 @@ class TestFileExport {
         if (fileOut.exists()) {
             fileOut.delete()
         }
-
         FileExportUtil.encryptFileStream(fileIn, fileOut)
     }
 
@@ -53,6 +51,27 @@ class TestFileExport {
     fun `test-file-decrypt-stream`() {
         val fileIn = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\encrypt-stream.jpg")
         val fileOut = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\decrypt-stream.jpg")
+        if (fileOut.exists()) {
+            fileOut.delete()
+        }
+        FileExportUtil.decryptFile(fileIn, fileOut)
+    }
+
+
+    @Test
+    fun `test-file-encrypt-stream-custom`() {
+        val fileIn = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\in.jpg")
+        val fileOut = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\encrypt-stream-custom.jpg")
+        if (fileOut.exists()) {
+            fileOut.delete()
+        }
+        FileExportUtil.encryptFileStream(fileIn, fileOut)
+    }
+
+    @Test
+    fun `test-file-decrypt-stream-custom`() {
+        val fileIn = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\encrypt-stream-custom.jpg")
+        val fileOut = File("C:\\Projects\\IdeaProjects\\KotlinTest\\src\\test\\kotlin\\rsa_aes\\decrypt-stream-custom.jpg")
         if (fileOut.exists()) {
             fileOut.delete()
         }
